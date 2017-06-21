@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Router management</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
+    	<script src="hello.js"></script>
+    	<script src="account.js"></script>
+    	<!--script src="retrieveLS.js"></script-->
+	</head>
+	<body>
+		<div ng-app="myApp">
+		<hr>
+	 		
+			<span> Welcome to Router management - Account Management</span>
+			<div ng-controller="accountCtrl">
+				<br>
+				Menu:
+				 <ul>
+		  			
+		  			<li><a href="http://147.102.22.76:8080/signin">Login/Logout</a> </li>
+		  			<li><a href="http://147.102.22.76:8080/account">Account mgmt</a> </li>
+		  			<li><a href="http://147.102.22.76:8080/">Basic Config</a> </li>
+		  			<li><a href="http://147.102.22.76:8080/ifcs.html">Interfaces</a> </li>
+		  			<li>SNMP</li>
+		  			<li>DHCP</li>
+		  			<li>...</li>
+				</ul> 
+				<hr>		
+				
+				<form name="myForm3" ng-controller="accountCtrl">
+					  <p> User Profile </p>
+					  <label>Username:
+					    <input type="text" name="input" ng-model="username" ng-disabled>
+					  </label>					  
+					  <br/>  
+					  <label>password:
+					    <input type="text" name="input" ng-model="password">
+					  </label>					  
+					  <br/>
+					  <label>Email:
+					    <input type="text" name="input" ng-model="email">
+					  </label>					  
+					  <br/>  
+					  <label>FullName:
+					    <input type="text" name="input" ng-model="fullname">
+					  </label>					  
+					  <br/> 
+					   <label>University-School:
+					    <input type="text" name="input" ng-model="academic">
+					  </label>					  
+					  <br/>   
+					  <button ng-click="update()">
+		  			 	Submit
+					  </button>
+					 <button ng-click="clearAll()">
+		  		 		Reset
+					 </button>		 					 
+				</form>
+				<p>account system status: {{new_user_response}}</p>				
+			
+			</div>				
+	 </div>
+			
+	</body>
+</html>		

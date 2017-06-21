@@ -1,0 +1,59 @@
+
+<html>
+	<head>
+		<title>Router management</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
+    	<script src="interfaces.js"></script>
+    	<!--script src="retrieveLS.js"></script-->
+	</head>
+
+	<body>
+		<div ng-app="myApp">
+		<hr>
+	 		<div ng-controller="myCtrl2">
+				<span> Welcome to Interface - Router management</span>
+				<hr>
+				<ul>
+	  				<li><a href="http://147.102.22.76:8080/">Basic Config</a> </li>
+	  				<li><a href="http://147.102.22.76:8080/ifcs.html">Interfaces</a> </li>
+	  				<li>SNMP</li>
+	  				<li>DHCP</li>
+	  				<li>...</li>
+				</ul> 
+			</div>
+		<hr>
+		
+
+		<form name="myForm" ng-controller="myCtrl2">
+			  <label>Retrieve Interfaces for LS (input LS name):
+			    <input type="text" name="input" ng-model="lsname">
+			  </label>
+			  <br/>  
+			  <button ng-click="getInterfacesList()">
+		  	 	Submit
+			  </button>		 
+			  <p>interfaces: {{ls_ifcs_response}}</p>				
+		 </form>
+		<hr>
+		<form name="myForm2" ng-controller="myCtrl2">
+			<p>Retrieve Interface details</p>
+			<label>input LS name:		
+			    <input type="text" name="input" ng-model="ifclsname">			    
+			  </label>
+			<br>
+			<label>input ifc name:
+			    <input type="text" name="input" ng-model="ifcname">			    
+			</label>
+
+			  <br/>  
+			  <button ng-click="getInterfaceDetails()">
+		  	 	Submit
+			  </button>		 
+			  <p>interfaces: {{ifcname_response}}</p>				
+		 </form>
+
+
+		</div>
+
+	</body>
+</html>		

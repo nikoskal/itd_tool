@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Router management</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
+    	<script src="hello.js"></script>
+    	<!--script src="retrieveLS.js"></script-->
+	</head>
+	<body>
+		<div ng-app="myApp">
+		<hr>
+	 		<div  ng-controller="myCtrl">
+			<span> Welcome to Router management</span>
+			<div>
+				<br>
+				Menu:
+				 <ul>
+		  			
+		  			<li><a href="http://147.102.22.76:8080/login.html">login/logout</a> </li>
+		  			<li><a href="http://147.102.22.76:8080/account.html">Account mgmt</a> </li>
+		  			<li><a href="http://147.102.22.76:8080/">Basic Config</a> </li>
+		  			<li><a href="http://147.102.22.76:8080/ifcs.html">Interfaces</a> </li>
+		  			<li>SNMP</li>
+		  			<li>DHCP</li>
+		  			<li>...</li>
+				</ul> 
+				</div>
+				<hr>		
+					<br>
+						<button ng-click="clearAll()">
+		  				Clear all
+						</button>
+				<hr>			
+						<button ng-click="getConfigTaskid()">
+		  				Retrieve Status
+						</button>
+						<p>async call taskid: {{taskid}}</p>
+						<p>physical systemt status: {{task_response}}</p>				
+					<br>
+				<hr>		
+					<br>
+						<button ng-click="getLS()">
+		  				Retrieve LS names
+						</button>
+						<p>Logical systems: {{lsnameList}}</p>				
+					<br>
+				<hr>		
+					<form name="myForm" ng-controller="myCtrl">
+					  <label>Retrieve Status for LS (input name):
+					    <input type="text" name="input" ng-model="lsname">
+					  </label>
+					  
+					  <br/>  
+					
+					  <button ng-click="getLSConfig()">
+		  			 	Submit
+					  </button>		 
+					 <p>logical system status: {{ls_response}}</p>				
+					 </form>
+				<hr>			
+
+					<form name="myForm2" ng-controller="myCtrl">
+					  <label>Create new LS (input name):
+					    <input type="text" name="input" ng-model="new_lsname">
+					  </label><br/>
+					  <label>New username:
+					    <input type="text" name="input" ng-model="username">
+					  </label><br/>
+					  <label>Fullname:
+					    <input type="text" name="input" ng-model="fullname">
+					  </label><br/>			  
+					  <label>New password:
+					    <input type="text" name="input" ng-model="password">
+					  </label><br/>
+					  <label>Access Privilege Levels: ('view' or 'all'):
+					    <input type="text" name="input" ng-model="rights">
+					  </label>
+					  
+					  <br/>  
+					
+					  <button ng-click="createLS()">
+		  			 	Submit
+					  </button>		 
+					 <p>logical system status: {{new_lsname_response}}</p>				
+					 </form>
+				<hr>			
+
+
+					<form name="myForm3" ng-controller="myCtrl">
+					  <label>Delete LS (input LS name):
+					    <input type="text" name="input" ng-model="delete_lsname">
+					  </label><br/>
+					  <label>Delete admin (input username):
+					    <input type="text" name="input" ng-model="delete_username">
+					  </label><br/>			  
+					  <br/>  
+					
+					  <button ng-click="deleteLS()">
+		  			 	Submit
+					  </button>		 
+					 <p>logical system status: {{deleted_lsname_response}}</p>				
+					 </form>
+					
+					</div>
+
+				<hr>			
+				</div>
+			<hr>
+	</body>
+</html>		

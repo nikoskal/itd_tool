@@ -1,0 +1,37 @@
+from django.db import models
+from django.contrib.auth.models import User
+from django.contrib.auth.models import User
+from django.db.models import signals
+from django.dispatch import dispatcher
+# Create your models here.
+
+
+# class UserAction(models.Model):
+#     username = models.CharField(max_length=30)
+#     routeradmin = models.CharField(max_length=30)
+#     lsname = models.CharField(max_length=30)
+#     date_modified = models.DateTimeField(auto_now=True)
+#     router_task = models.TextField()
+#     script_commited = models.TextField()
+#
+#     def __str__(self):
+#         output = self.username+" "+self.script_commited
+#         return output
+
+
+class QueryParameters(models.Model):
+    description = models.TextField()
+    sources = models.CharField(max_length=30) #["Twitter", "Google", "Youtube"]
+    location = models.CharField(max_length=30) # ["Athens", "Rome", "Madrid"]
+    start_date = models.DateField() # starting time period to search
+    end_date = models.DateField()  # ending time period to search
+    inference = models.BooleanField()
+    questions = models.BooleanField()
+
+
+    date_param_added = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        output = self.description + " " + self.sources
+        return output

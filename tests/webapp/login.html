@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Router management</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
+    	<script src="login.js"></script>
+    	<!--script src="retrieveLS.js"></script-->
+	</head>
+	<body>
+		<div ng-app="myApp">
+		<hr>
+	 		<div>
+			<span> Welcome to Router management - Login page</span>
+				<div ng-controller="loginCtrl">
+				<br>
+				<hr>		
+					<form name="loginForm" ng-controller="loginCtrl">
+					  <label>User name:
+					    <input type="text" name="input" ng-model="username">
+					  </label>
+					  <br>
+					  <label>Password:
+					    <input type="text" name="input" ng-model="password">
+					  </label>
+					  <br/>  <br/>
+					
+					  <button ng-click="doLogin()">
+		  			 	Submit
+					  </button>	  
+					  <button ng-click="clear()">
+		  			 	Reset
+					  </button>						 
+					 
+					 </form>
+					<p>Result=  {{login_response}}</p>				
+				</div>
+			</div>
+		</body>
+</html>
