@@ -14,12 +14,12 @@ def get_google_username():
 
 def get_google_password():
     try:
-        google_username = settings.GOOGLE_PASSWORD
+        google_password = settings.GOOGLE_PASSWORD
     except AttributeError:
         print "No Google username is set, please set GOOGLE_PASSWORD attribute in settings!!"
         return False
 
-    return google_username
+    return google_password
 
 
 def get_twitter_auth():
@@ -37,3 +37,22 @@ def get_twitter_auth():
 
     return auth
 
+
+def get_adwords_username():
+    try:
+        adwords_username = settings.ADWORDS_USERNAME
+    except AttributeError:
+        print "No Adwords username is set, please set ADWORDS_USERNAME attribute in settings!!"
+        return False
+
+    return adwords_username
+
+
+def get_adwords_password():
+    try:
+        adwords_password = settings.ADWORDS_PASSWORD
+    except AttributeError:
+        print "No Adwords password is set, please set ADWORDS_PASSWORD attribute in settings!!"
+        return False
+
+    return adwords_password

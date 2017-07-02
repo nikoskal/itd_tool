@@ -45,6 +45,10 @@ TWITTER_SECRET = sec_params['TWITTER_SECRET']
 TWITTER_ACCESS_TOKEN = sec_params['TWITTER_ACCESS_TOKEN']
 TWITTER_ACCESS_TOKEN_SECRET = sec_params['TWITTER_ACCESS_TOKEN_SECRET']
 
+# ADWORDS Security parameters
+ADWORDS_USERNAME = sec_params['ADWORDS_USERNAME']
+ADWORDS_PASSWORD = sec_params['ADWORDS_PASSWORD']
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -124,7 +128,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 BROKER_URL = 'amqp://guest:guest@localhost//'
 
 # CELERY: List of modules to import when celery starts.
-CELERY_IMPORTS = ('itdtool.tasks.query_params_task', 'itdtool.tasks.gtrends_task','itdtool.tasks.twitter_task')
+CELERY_IMPORTS = ('itdtool.tasks.query_params_task', 'itdtool.tasks.gtrends_task','itdtool.tasks.twitter_task',
+                                                                                  'itdtool.tasks.adwords_task')
 
 # REDIS: Using the database to store task state and results.
 CELERY_RESULT_BACKEND = 'redis://'

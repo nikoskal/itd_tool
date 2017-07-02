@@ -4,21 +4,6 @@ The ITD tool integrates existing tools for monitoring search trends, keyword res
 social media analytics.
 
 
-Steps to start the ITD service (in a Mac)
-
-1. Start redis
-nikosk@nikoss-MBP:/usr/local/sbin$ redis-server
-
-2. Start rabbitmq
-nikosk@nikoss-MBP:/usr/local/sbin$ ./rabbitmq-server
-
-3. Start Celery
-~/PycharmProjects/itd$ celery -A itdtool worker -l info
-
-4. Start django
-~/PycharmProjects/itd$  python manage.py runserver
-
-
 Python dependencies extracted by pip freeze
 alabaster==0.7.8
 amqp==2.1.4
@@ -47,6 +32,7 @@ flower==0.8.3
 funcsigs==0.4
 future==0.15.2
 futures==3.0.3
+httpclient==0.0.2
 idna==2.1
 imagesize==0.7.1
 ipaddress==1.0.16
@@ -58,7 +44,7 @@ lxml==3.4.4
 MarkupSafe==0.23
 mock==1.3.0
 mysqlclient==1.3.7
-ncclient==0.4.3
+ncclient==0.5.3
 netaddr==0.7.18
 numpy==1.12.1
 oauthlib==2.0.2
@@ -81,6 +67,7 @@ pyparsing==2.2.0
 pytest==2.8.7
 python-dateutil==2.5.1
 python-memcached==1.48
+python-rest-client==0.3
 pytrends==4.1.1
 pytz==2017.2
 PyYAML==3.11
@@ -103,4 +90,19 @@ WebOb==1.6.0
 xmltodict==0.9.2
 zope.interface==4.4.0
 
+
+
+Steps to start the ITD service
+
+1. Start redis
+:/usr/local/sbin$ redis-server
+
+2. Start rabbitmq
+:/usr/local/sbin$ ./rabbitmq-server
+
+3. Start Celery
+~/PycharmProjects/itd_tool$ celery -A itdtool worker -l info
+
+4. Start django
+~/PycharmProjects/itd_tool$ python manage.py runserver
 

@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.authtoken import views
 
-from rest.views import views_gtrends, views_queryparams, views_twitter, views_combined
+from rest.views import views_gtrends, views_queryparams, views_twitter, views_combined, views_adwords
 
 
 
@@ -12,11 +12,24 @@ urlpatterns = [
     # basic configuration
     #################################################
 
-    url(r'^combined/$', views_combined.get_combined),
+    # integrated query
+    url(r'^integrated/$', views_combined.get_combined),
+
+    # adwords
+    url(r'^google-adwords/(?P<keywd>[a-zA-Z0-9_]+)/location/(?P<loc_name>[a-zA-Z0-9_]+)$', views_adwords.keywords_volume),
+
+    # twitter
     url(r'^twitter-trends/(?P<place_id>[a-zA-Z0-9_]+)/$', views_twitter.get_trends_location),
-    url(r'^google-trends/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.related_kws),
+
+    # google trends
+    url(r'^gtrends-time/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.over_time),
+    url(r'^gtrends-time-list/k1/(?P<keyword1>[a-zA-Z0-9_]+)/k2/(?P<keyword2>[a-zA-Z0-9_]+)$',
+        views_gtrends.over_time_list),
+    url(r'^gtrends-keywords/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.related_kws),
     url(r'^google-cat-suggestions/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.cat_suggestions),
     url(r'^google-related-queries/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.related_queries),
+
+    # query params
     url(r'^query-parameters/$', views_queryparams.query_params_mgmt),
     url(r'^query-parameters/(?P<id>[0-9]+)/$', views_queryparams.query_params_mgmt_id),
 
