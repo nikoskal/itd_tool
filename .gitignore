@@ -101,3 +101,5 @@ ENV/
 .mypy_cache/
 
 security_params.conf
+googleads.yaml
+.DS_Store
