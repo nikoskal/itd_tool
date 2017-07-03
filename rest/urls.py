@@ -22,11 +22,12 @@ urlpatterns = [
     url(r'^twitter-trends/(?P<place_id>[a-zA-Z0-9_]+)/$', views_twitter.get_trends_location),
 
     # google trends
+    url(r'^gtrends-region/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.over_region),
     url(r'^gtrends-time/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.over_time),
     url(r'^gtrends-time-list/k1/(?P<keyword1>[a-zA-Z0-9_]+)/k2/(?P<keyword2>[a-zA-Z0-9_]+)$',
         views_gtrends.over_time_list),
     url(r'^gtrends-keywords/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.related_kws),
-    url(r'^google-cat-suggestions/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.cat_suggestions),
+    # url(r'^google-cat-suggestions/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.cat_suggestions),
     url(r'^google-related-queries/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.related_queries),
 
     # query params
