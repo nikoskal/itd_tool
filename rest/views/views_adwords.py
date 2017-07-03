@@ -15,7 +15,7 @@ adwords_password = account_repo.get_adwords_password()
 # @permission_classes((IsAuthenticated,))
 def keywords_volume(request, keywd, loc_name, format=None):
     """
-    Retrieve related queries
+    Retrieve keywords volume
 
     """
     ip_address = request.META['REMOTE_ADDR']
@@ -29,3 +29,23 @@ def keywords_volume(request, keywd, loc_name, format=None):
         related_keywords_asynch = get_keywords_volume.delay(adwords_username,adwords_password, keywd, loc_name )
         return Response(related_keywords_asynch.get(), status=status.HTTP_200_OK)
 
+
+
+@api_view(['GET'])
+# @authentication_classes((TokenAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
+def keywords_volume_query_id(request, keywd, query_id, format=None):
+    """
+    Retrieve related queries
+
+    """
+    ip_address = request.META['REMOTE_ADDR']
+    if valid_ip(ip_address) is False:
+        return Response("Not authorised client IP", status=status.HTTP_401_UNAUTHORIZED)
+
+    print "in view:" + str(keywd)
+
+    if request.method == 'GET':
+
+        related_keywords_asynch = get_keywords_volume.delay(adwords_username,adwords_password, keywd, loc_name )
+        return Response(related_keywords_asynch.get(), status=status.HTTP_200_OK)

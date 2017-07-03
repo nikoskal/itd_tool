@@ -27,11 +27,22 @@ class QueryParameters(models.Model):
     end_date = models.DateField()  # ending time period to search
     inference = models.BooleanField()
     questions = models.BooleanField()
-
-
     date_param_added = models.DateTimeField(auto_now=True)
-
 
     def __str__(self):
         output = self.description + " " + self.sources
+        return output
+
+
+# keyword	language	year	month	count	location
+class AdwordsResults(models.Model):
+    keyword = models.TextField() #snowden
+    language = models.CharField(max_length=30) #["en", "el"]
+    location = models.CharField(max_length=30) # ["Athens", "Rome", "Madrid"]
+    year = models.IntegerField() # 2016
+    month = models.IntegerField()  # 5
+    date_param_added = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        output = self.keyword + " " + self.location+" "+self.month+" "+self.year
         return output
