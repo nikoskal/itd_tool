@@ -13,7 +13,7 @@ from django.conf import settings
 import json
 import pprint
 
-from pytrends.request import TrendReq
+from itdtool.requests import TrendReq
 
 
 @app.task

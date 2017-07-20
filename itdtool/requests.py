@@ -3,11 +3,13 @@ import sys
 import requests
 import json
 import pandas as pd
+
 from bs4 import BeautifulSoup
 if sys.version_info[0] == 2:  # Python 2
     from urllib import quote
 else:  # Python 3
     from urllib.parse import quote
+
 
 
 class TrendReq(object):
@@ -52,6 +54,8 @@ class TrendReq(object):
         http://stackoverflow.com/questions/6754709/logging-in-to-google-using-python
         """
         self.ses = requests.session()
+        self.ses.verify = False
+
         login_html = self.ses.get(self.url_login, headers=self.custom_useragent)
         soup_login = BeautifulSoup(login_html.content, "lxml").find('form').find_all('input')
         form_data = dict()
