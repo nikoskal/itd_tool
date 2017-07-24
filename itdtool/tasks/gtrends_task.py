@@ -20,7 +20,7 @@ from itdtool.requests import TrendReq
 def get_region_interest(keyword, google_username, google_password):
 
     path = ""
-    pytrend = TrendReq(google_username, google_password, custom_useragent='ITD script')
+    pytrend = TrendReq(google_username, google_password, hl='en-US', custom_useragent='ITD script')
     kw_list = [keyword]
     pytrend.build_payload(kw_list)
     # pytrend.build_payload(kw_list=['obama', 'trump'])
@@ -47,7 +47,7 @@ def get_region_interest(keyword, google_username, google_password):
 def get_related_queries(keyword, google_username, google_password):
 
     path = ""
-    pytrend = TrendReq(google_username, google_password, custom_useragent='ITD script')
+    pytrend = TrendReq(google_username, google_password,hl='en-US', custom_useragent='ITD script')
     kw_list= [keyword]
     pytrend.build_payload(kw_list)
     # pytrend.build_payload(kw_list=['obama', 'trump'])
@@ -96,7 +96,7 @@ def get_time_interest(keyword,  google_username, google_password):
     kw_list = [keyword]
 
     # Login to Google. Only need to run this once, the rest of requests will use the same session.
-    pytrend = TrendReq(google_username, google_password, custom_useragent='ITD script')
+    pytrend = TrendReq(google_username, google_password, hl='en-US', custom_useragent='ITD script')
     # Create payload and capture API tokens. Only needed for interest_over_time(), interest_by_region() & related_queries()
     pytrend.build_payload(kw_list)
     # Interest Over Time
@@ -158,7 +158,7 @@ def get_time_interest_list(kw_list,  google_username, google_password):
 
     # uncomment for real results
     # Login to Google. Only need to run this once, the rest of requests will use the same session.
-    pytrend = TrendReq(google_username, google_password, custom_useragent='ITD script')
+    pytrend = TrendReq(google_username, google_password, hl='en-US', custom_useragent='ITD script')
     # Create payload and capture API tokens. Only needed for interest_over_time(), interest_by_region() & related_queries()
     pytrend.build_payload(kw_list)
     # Interest Over Time
@@ -187,7 +187,7 @@ def get_related_keywords(kw_list_obj ,  google_username, google_password):
     print "task key words :" +str(kw_list)
 
     # Login to Google. Only need to run this once, the rest of requests will use the same session.
-    pytrend = TrendReq(google_username, google_password, custom_useragent='My Pytrends Script')
+    pytrend = TrendReq(google_username, google_password, hl='en-US', custom_useragent='My Pytrends Script')
 
     # suggestions_dict = pytrend.suggestions(keyword='pizza')
     suggestions_dict = pytrend.suggestions(keyword = kw_list_obj)
