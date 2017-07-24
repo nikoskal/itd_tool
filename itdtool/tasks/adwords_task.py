@@ -32,12 +32,12 @@ def get_keywords_volume(adwords_username, adwords_password, keywd, loc_name ):
         # )
     ]
     #
-    # response = client.post("/v2/kwrd_sv", dict(data=keywords_list))
-    # if response["status"] == "error":
-    #     print("error. Code: %d Message: %s" % (response["error"]["code"], response["error"]["message"]))
-    # else:
-    #     print(response["results"])
-    response = 'foo'
+    response = client.post("/v2/kwrd_sv", dict(data=keywords_list))
+    if response["status"] == "error":
+        print("error. Code: %d Message: %s" % (response["error"]["code"], response["error"]["message"]))
+    else:
+        print(response["results"])
+    # response = 'foo'
 
     return response
 
