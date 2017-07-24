@@ -181,7 +181,7 @@ def get_time_interest_list(kw_list,  google_username, google_password):
 @app.task
 def get_related_keywords(kw_list_obj ,  google_username, google_password):
 
-    kw_list_obj = 'snowden'
+    # kw_list_obj = 'snowden'
     kw_list = [kw_list_obj]
     # kw_list = [kw_list_obj]
     print "task key words :" +str(kw_list)
