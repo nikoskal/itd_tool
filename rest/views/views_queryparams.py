@@ -17,7 +17,7 @@ from validate_ip import valid_ip
 from validate_user import valid_user
 
 
-@api_view(['DELETE','GET', 'POST'])
+@api_view(['DELETE', 'GET', 'POST'])
 # @authentication_classes((TokenAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
 def query_params_mgmt_id(request, id, format=None):
@@ -42,7 +42,7 @@ def query_params_mgmt_id(request, id, format=None):
 
     if request.method == 'DELETE':
         print "delete query_params by id in view "
-        deletion_status = delete_query_params_id(id)
+        deletion_status = delete_query_params_id.delay(id)
         print "deletion_status:" + str(deletion_status)
 
 
@@ -61,9 +61,7 @@ def query_params_mgmt_id(request, id, format=None):
         return Response(query_param.get(), status=status.HTTP_200_OK)
 
 
-
-
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'POST'])
 # @authentication_classes((TokenAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
 def query_params_mgmt(request, format=None):
