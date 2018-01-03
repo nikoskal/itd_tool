@@ -8,6 +8,7 @@ from tweepy import OAuthHandler
 # from tweepy import Stream
 from tweepy import API
 from itdtool import account_repo
+import tweepy
 
 
 @app.task
@@ -27,6 +28,46 @@ def get_tw_trends(place_id):
     print(trendsName)
 
     return trendsName
+
+
+@app.task
+def get_tw_trends_term(term):
+
+    result = []
+    # print "starting"
+    auth = account_repo.get_twitter_auth()
+    api = API(auth)
+
+    # Also note that the search results at twitter.com may return historical results
+    # while the Search API usually only serves tweets from the past week.- Twitter documentation.
+
+    cricTweet = tweepy.Cursor(api.search, q="#"+term).items(350)
+
+    print "loop"
+
+    
+    for tweet in cricTweet:
+            # print tweet.created_at, tweet.text, tweet.lang
+
+            # print tweet.user.name
+        name = tweet.user.name
+        # print name
+        if "RT @" not in tweet.text:
+            if (tweet.retweet_count > 5) or (tweet.favorite_count > 5):
+                tweet = {
+                        "user": name,
+                        "text": tweet.text,
+                        "favs": tweet.favorite_count,
+                        "retweets": tweet.retweet_count,
+                        "created": tweet.created_at}
+                result.append(tweet)
+
+    # print "finished"
+    # print result
+    # print len(result)
+    return result
+
+
 
 
 #

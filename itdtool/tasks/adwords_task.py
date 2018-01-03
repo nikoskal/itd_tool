@@ -7,10 +7,10 @@ from itdtool.celeryapp import app
 def get_keywords_volume(adwords_username, adwords_password, keywd, loc_name ):
     # client = RestClient("login", "password")
 
-    print "keyword:" + str(keywd)
-    print "loc_name:" + str(loc_name)
-    print "adwords_username:" + str(adwords_username)
-    print "adwords_password:" + str(adwords_password)
+    # print "keyword:" + str(keywd)
+    # print "loc_name:" + str(loc_name)
+    # print "adwords_username:" + str(adwords_username)
+    # print "adwords_password:" + str(adwords_password)
 
     client = RestClient(adwords_username, adwords_password)
 
@@ -36,9 +36,10 @@ def get_keywords_volume(adwords_username, adwords_password, keywd, loc_name ):
     if response["status"] == "error":
         print("error. Code: %d Message: %s" % (response["error"]["code"], response["error"]["message"]))
     else:
-        print(response["results"])
+        print(response["results"][0]["ms"])
+
     # response = 'foo'
 
-    return response
+    return response["results"][0]["ms"]
 
 
