@@ -101,15 +101,25 @@ def query_params_mgmt(request, format=None):
     if request.method == 'POST':
         print "create query_params_mgmt "
         description = request.data['description']
-        sources = request.data['sources']
+        keywords = request.data['keywords']
         location = request.data['location']
         start_date = request.data['start_date']
         end_date = request.data['end_date']
         inference = request.data['inference']
         questions = request.data['questions']
+        twitter = request.data['twitter']
+        google = request.data['google']
+        category = request.data['category']
+        topic = request.data['topic']
+        youtube = request.data['youtube']
 
-        new_params = add_query_params(description, sources, location, start_date,
-                                      end_date, inference, questions)
+        print category
+        print topic
+        print keywords
+
+        new_params = add_query_params(description, keywords, location, start_date,
+                                      end_date, inference, questions, twitter, google,youtube,
+                                      category, topic)
         print 'new_params:'+ str(new_params)
 
         return Response(True, status=status.HTTP_200_OK)

@@ -103,3 +103,4 @@ ENV/
 security_params.conf
 googleads.yaml
 .DS_Store
+.idea

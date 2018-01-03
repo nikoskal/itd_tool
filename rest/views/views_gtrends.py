@@ -2,14 +2,36 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from itdtool import account_repo
-from itdtool.tasks.gtrends_task import get_related_keywords, get_related_queries,\
-    get_time_interest, get_time_interest_list, get_region_interest
+from itdtool.tasks.gtrends_task import get_cat_suggestions, get_related_queries,\
+    get_time_interest, get_time_interest_list, get_region_interest, get_autocomplete
 from validate_ip import valid_ip
 from validate_user import valid_user
 
 google_username = account_repo.get_google_username()
 google_password = account_repo.get_google_password()
 
+
+
+@api_view(['GET'])
+# @authentication_classes((TokenAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
+def autocomplete(request, keyword, format=None):
+    """
+    Get autocomplete questions...
+    :param request:
+    :param keyword:
+    :param format:
+    :return:
+    """
+    ip_address = request.META['REMOTE_ADDR']
+    if valid_ip(ip_address) is False:
+        return Response("Not authorised client IP", status=status.HTTP_401_UNAUTHORIZED)
+
+    if request.method == 'GET':
+
+        autocomplete_asynch = get_autocomplete.delay(keyword)
+        # print "trend_asynch: "+ trend_asynch
+        return Response(autocomplete_asynch.get(), status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -51,7 +73,7 @@ def over_region(request, keyword, format=None):
 @api_view(['GET'])
 # @authentication_classes((TokenAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
-def related_queries(request, keyword, format=None):
+def related_queries(request, keyword, location, category, format=None):
     """
     Retrieve related queries (rising and top)
 
@@ -62,9 +84,9 @@ def related_queries(request, keyword, format=None):
 
     if request.method == 'GET':
 
-        related_queries_asynch = get_related_queries.delay(keyword, google_username, google_password)
+        related_queries_asynch = get_related_queries.delay(keyword, location, category, google_username, google_password)
         # print "related_queries_asynch: "+ str(related_queries_asynch.get())
-        print "eftasa edo"
+
         return Response(related_queries_asynch.get(), status=status.HTTP_200_OK)
 
 
@@ -90,7 +112,7 @@ def related_queries(request, keyword, format=None):
 @api_view(['GET'])
 # @authentication_classes((TokenAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
-def over_time(request, keyword, format=None):
+def over_time(request, keyword, location, format=None):
     """
     Retrieve interest over time for one term
     Numbers represent search interest relative to the highest point on the 
@@ -118,7 +140,7 @@ def over_time(request, keyword, format=None):
 
     if request.method == 'GET':
         # kw_list = [keyword]
-        trend_asynch = get_time_interest.delay(keyword, google_username, google_password)
+        trend_asynch = get_time_interest.delay(keyword, location, google_username, google_password)
         # print "trend_asynch: "+ trend_asynch
         return Response(trend_asynch.get(), status=status.HTTP_200_OK)
 
@@ -159,7 +181,7 @@ def over_time_list(request, keyword1, keyword2, format=None):
 @api_view(['GET'])
 # @authentication_classes((TokenAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
-def related_kws(request, keyword,  format=None):
+def cat_suggestions(request, keyword,  format=None):
     """
     Retrieve related keywords
 
@@ -181,5 +203,5 @@ def related_kws(request, keyword,  format=None):
 
     if request.method == 'GET':
 
-        related_kws_asynch = get_related_keywords.delay(keyword, google_username, google_password)
+        related_kws_asynch = get_cat_suggestions.delay(keyword, google_username, google_password)
         return Response(related_kws_asynch.get(), status=status.HTTP_200_OK)
