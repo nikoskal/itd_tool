@@ -2,13 +2,74 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from itdtool import account_repo
-from itdtool.tasks.gtrends_task import get_cat_suggestions, get_related_queries,\
-    get_time_interest, get_time_interest_list, get_region_interest, get_autocomplete
+from itdtool.tasks.gtrends_task import get_cat_suggestions, get_autocomplete, get_gtrends
 from validate_ip import valid_ip
 from validate_user import valid_user
 
 google_username = account_repo.get_google_username()
 google_password = account_repo.get_google_password()
+
+
+
+# if location 'none' defaults to wordwide
+# categories -->
+# Movies: 34
+# News : 16
+# Real Estate: 29
+
+@api_view(['GET'])
+def gtrends(request, keyword, location, category, format=None):
+    if request.method == 'GET':
+        print keyword, location, category
+        get_gtrends_asynch = get_gtrends.delay(keyword, location, category)
+        print "get_gtrends_asynch: " + str(get_gtrends_asynch.get())
+        return Response(get_gtrends_asynch.get(), status=status.HTTP_200_OK)
+
+
+
+
+
+
+@api_view(['GET'])
+def test(request, format=None):
+
+    if request.method == 'GET':
+        keyword = 'snowden'
+        location = 'GB'
+        category = 0
+        print "start testing for "+ str(keyword)
+        #1
+        print "test: get_related_queries "
+        related_queries_asynch = get_related_queries.delay(keyword, location, category)
+        print "related_queries_asynch: " + str(related_queries_asynch.get())
+        #2
+        print "test: get_cat_suggestions: "
+        cat_suggestions_asynch = get_cat_suggestions.delay(keyword)
+        print "cat_suggestions_asynch: " + str(cat_suggestions_asynch.get())
+        #3
+        print "test: get_time_interest: "
+        time_interest_asynch = get_time_interest.delay(keyword, location, google_username, google_password)
+        time_interest_kw_dic = time_interest_asynch.get()
+        print "time_interest_asynch: " + str(time_interest_kw_dic.get())
+        #4
+        print "test: get_region_interest: "
+        region_interest_kw_asynch = get_region_interest.delay(keyword, category, google_username, google_password)
+        print "time_interest_asynch: " + str(region_interest_kw_asynch.get())
+        #5
+        print "test: get_autocomplete: "
+        autocomplete_asynch = get_autocomplete.delay(keyword)
+        print "autocomplete_asynch: " + str(autocomplete_asynch.get())
+        #
+        print "Finished testing"
+
+        results = {"1related_queries_list": related_queries_asynch.get(),
+                   "2cat_suggestions": cat_suggestions_asynch.get(),
+                   "3time_interest_list": time_interest_kw_dic[keyword],
+                   "4interest_over_region": region_interest_kw_asynch.get(),
+                   "5autocomplete": autocomplete_asynch.get(),
+                   }
+
+        return Response(results, status=status.HTTP_200_OK)
 
 
 
@@ -83,7 +144,7 @@ def related_queries(request, keyword, location, category, format=None):
         return Response("Not authorised client IP", status=status.HTTP_401_UNAUTHORIZED)
 
     if request.method == 'GET':
-
+        print "1 .related_queries_asynch: "+ str(keyword)
         related_queries_asynch = get_related_queries.delay(keyword, location, category, google_username, google_password)
         # print "related_queries_asynch: "+ str(related_queries_asynch.get())
 
@@ -202,6 +263,5 @@ def cat_suggestions(request, keyword,  format=None):
     #                     status=status.HTTP_401_UNAUTHORIZED)
 
     if request.method == 'GET':
-
-        related_kws_asynch = get_cat_suggestions.delay(keyword, google_username, google_password)
-        return Response(related_kws_asynch.get(), status=status.HTTP_200_OK)
+        cat_suggestions_asynch = get_cat_suggestions.delay(keyword, google_username, google_password)
+        return Response(cat_suggestions_asynch.get(), status=status.HTTP_200_OK)

@@ -36,12 +36,18 @@ urlpatterns = [
         views_gtrends.over_time_list),
     url(r'^gtrends-keyword-topic/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.cat_suggestions),
     # url(r'^google-cat-suggestions/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.cat_suggestions),
-    url(r'^google-related-queries/(?P<keyword>[a-zA-Z0-9_]+)/location/(?P<location>[a-zA-Z0-9_]+)/category/(?P<category>[a-zA-Z0-9_]+)$',
+    url(r'^google-related-queries/(?P<keyword>[a-zA-Z0-9_%]+)/location/(?P<location>[a-zA-Z0-9_]+)/category/(?P<category>[a-zA-Z0-9_]+)$',
         views_gtrends.related_queries),
+    # test gtrends calls
+
+    url(r'^gtrends/(?P<keyword>[a-zA-Z0-9_%]+)/location/(?P<location>[a-zA-Z]+)/category/(?P<category>[a-zA-Z0-9_]+)$', views_gtrends.gtrends),
+    url(r'^gtrends-tests/$', views_gtrends.test),
 
     # query params
     url(r'^query-parameters/$', views_queryparams.query_params_mgmt),
     url(r'^query-parameters/(?P<id>[0-9]+)/$', views_queryparams.query_params_mgmt_id),
+
+
 
     # GET /user
     # url(r'^user/$', views_user_mgmt.user),

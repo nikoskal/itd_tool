@@ -3,8 +3,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.response import Response
 from itdtool import account_repo
 from itdtool.tasks.twitter_task import get_tw_trends, get_tw_trends_term
-from itdtool.tasks.gtrends_task import get_cat_suggestions, get_time_interest, get_region_interest, \
-    get_related_queries,get_autocomplete
+from itdtool.tasks.gtrends_task import get_cat_suggestions, get_autocomplete, get_gtrends
 
 from validate_ip import valid_ip
 from validate_user import valid_user
@@ -31,7 +30,7 @@ def discover(request, queryid, format=None):
     if request.method == 'GET':
         print "integrated trends discovery query id: " + queryid
 
-        results = {};
+        results = {}
 
         # query_param = get_query_params_id.delay(id)
         query_param = get_query_params_id(queryid)
@@ -45,77 +44,46 @@ def discover(request, queryid, format=None):
         twitter =  query_param['twitter']
 
 
+        get_gtrends_asynch = get_gtrends.delay(keyword, location, category)
+        trends_results = get_gtrends_asynch.get()
+
+        print "## Retrieving get_related_queries ##"
+        related_queries_result_list = trends_results['related_queries_list']
+        print "## Retrieving time based interest ##"
+        time_interest_kw_dic = trends_results['time_interest_list']
+        print "## Retrieving region based interest ##"
+        region_interest_kw_dic = trends_results['interest_over_region']
+
+
+        #
+        # print "## Retrieving get_related_queries ##"
+        # related_queries_asynch = get_related_queries.delay(keyword, location, category, google_username, google_password)
+        # related_queries_result_list = related_queries_asynch.get()
+        # print "Retrieving get_related_queries - finished"
+        # # print related_queries_result_list
+        #
+        # ## Retrieving time based interest on Keyword ##
+        # print "## Retrieving time based interest ##"
+        # time_interest_kw_asynch = get_time_interest.delay(keyword, location, category, google_username, google_password)
+        # time_interest_kw_dic = time_interest_kw_asynch.get()
+        # print "Retrieving time based interest - finished"
+        #
+        # ## Retrieving region based interest on Keyword ##
+        # print "## Retrieving region based interest ##"
+        # region_interest_kw_asynch = get_region_interest.delay(keyword, category, google_username, google_password)
+        # region_interest_kw_dic = region_interest_kw_asynch.get()
+        # print "Retrieving region based interest - finished"
+
+
+
+
         # retrieve autocomplete questions
         print "## Retrieving autocomplete ##"
         autocomplete_asynch = get_autocomplete.delay(keyword)
         print "Retrieving autocomplete - finished"
-        # TODO change this to related queries not categories !!!
-        ## Retrieving suggested Keywords ##
-        # print "## Retrieving suggested Keywords ##"
-        # suggested_kws_asynch = get_cat_suggestions.delay(keyword, google_username, google_password)
-        # kws_result = str(suggested_kws_asynch.get())
-        # print "suggested_kws_asynch: " + kws_result
-        # kws_dic = suggested_kws_asynch.get()
-        # related_kwd_list = []
-        #
-        # # print len(kws_dic)
-        #
-        # for x in range(0, len(kws_dic)):
-        #     related_kwd = {
-        #         "type": kws_dic[x]['type'],
-        #         "mid": kws_dic[x]['mid'],
-        #         "title": kws_dic[x]['title']
-        #     }
-        #     related_kwd_list.append(related_kwd)
-        # print "related_kwd_list"
-        # print related_kwd_list
-        # kwds reply ready ##
-
-        print "## Retrieving get_related_queries ##"
-
-        related_queries_asynch = get_related_queries.delay(keyword, location, category, google_username, google_password)
-        related_queries_result_list = related_queries_asynch.get()
-
-        print "Retrieving get_related_queries - finished"
-        # print related_queries_result_list
-
-
-        # print "## Retrieving get_related_queries for youtube ##"
-        # related_queries_youtube_result_list = {}
-        # if youtube:
-        #     related_queries_youtube_asynch = get_related_queries.delay(keyword, location, category, True, google_username, google_password)
-        #     related_queries_youtube_result_list = related_queries_youtube_asynch.get()
-        #     print related_queries_youtube_result_list
-
-
-        # for x in range(0, len(kws_dic)):
-        #     related_kwd = {
-        #         "type": kws_dic[x]['type'],
-        #         "mid": kws_dic[x]['mid'],
-        #         "title": kws_dic[x]['title']
-        #     }
-        #     related_kwd_list.append(related_kwd)
-        # print "related_kwd_list"
-        # print related_kwd_list
-
-
-        ## Retrieving time based interest on Keyword ##
-        print "## Retrieving time based interest ##"
-        time_interest_kw_asynch = get_time_interest.delay(keyword, location, category, google_username, google_password)
-        time_interest_kw_dic = time_interest_kw_asynch.get()
-        # print "!!!!!time_interest_kw_dic_result: "
-        # print time_interest_kw_dic[keyword]
-        # time based interest reply ready ##
-        print "Retrieving time based interest - finished"
-
-        ## Retrieving region based interest on Keyword ##
-        print "## Retrieving region based interest ##"
-        region_interest_kw_asynch = get_region_interest.delay(keyword, category, google_username, google_password)
-        region_interest_kw_dic = region_interest_kw_asynch.get()
-        print "Retrieving region based interest - finished"
 
         ## Retrieving adwords volume ##
-        print "## Retrieving adwords volume ##"
+        print "## Retrieving adwords volume ## for " +keyword
         # Uncomment this !!!
         adwords_username = account_repo.get_adwords_username()
         adwords_password = account_repo.get_adwords_password()
@@ -124,13 +92,16 @@ def discover(request, queryid, format=None):
         volume_dic = keywords_volume_asynch.get()
 
         volume_list = []
-        for x in range(0, len(volume_dic)):
-            volume = {
-                "count": volume_dic[x]['count'],
-                "year": volume_dic[x]['year'],
-                "month": volume_dic[x]['month']
-            }
-            volume_list.append(volume)
+        try:
+            for x in range(0, len(volume_dic)):
+                volume = {
+                    "count": volume_dic[x]['count'],
+                    "year": volume_dic[x]['year'],
+                    "month": volume_dic[x]['month']
+                }
+                volume_list.append(volume)
+        except TypeError:
+            volume_list.append("none")
         # Until here !!!
 
 
@@ -150,7 +121,7 @@ def discover(request, queryid, format=None):
             try:
                 response_asynch = get_tw_trends_term.delay(keyword)
                 twitter_result = response_asynch.get()
-            except:
+            except :
                 twitter_result = [{"text": "too many twitter calls"}]
         else:
             twitter_result = {}
@@ -161,7 +132,7 @@ def discover(request, queryid, format=None):
         results = {"related_queries_list": related_queries_result_list,
                    # "related_queries_list_youtube": related_queries_youtube_result_list,
                    "volume_list": volume_list,
-                   "time_interest_list": time_interest_kw_dic[keyword],
+                   "time_interest_list": time_interest_kw_dic,
                    "interest_over_region": region_interest_kw_dic,
                    "autocomplete": autocomplete_asynch.get(),
                    "tweets": twitter_result
