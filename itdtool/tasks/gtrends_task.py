@@ -56,20 +56,30 @@ def get_autocomplete(keyword):
 
 
 @app.task
-def get_gtrends(keyword, location, category ):
+def get_gtrends(keyword, location, category, start_date, end_date ):
 
     pytrend = TrendReq()
     # keyword = "Blockchain"
+    # keyword = "edward snowden"
     kw_list = [keyword]
+
     if location == 'none':
         location = ''
     # loc = str(location)
-    print "location " +location
-    pytrend.build_payload(kw_list, cat=category, geo=location)
+    print "location "+location
+    timeframe = ''
+
+    #  correct date format 2014-01-01T00:00:00
+    if (len(start_date) == 19) and (len(end_date) == 19):
+        timeframe = start_date[:-9]+" "+end_date[:-9]
+
+    # '2016-12-14 2017-01-25'
+    print timeframe
+
+    pytrend.build_payload(kw_list, cat=category, timeframe=timeframe, geo=location)
 
     # region interest
     region_interest_df = pytrend.interest_by_region()
-
     region_interest = region_interest_df[keyword]
     region_result = []
     for region in region_interest.keys():
@@ -77,9 +87,9 @@ def get_gtrends(keyword, location, category ):
              "interest": region_interest_df[keyword][region]}
         region_result.append(d)
 
-
     # related_queries
     try:
+        print("------")
         related_queries_dict = pytrend.related_queries()
         rising_df = related_queries_dict[keyword]['rising']
         top_df = related_queries_dict[keyword]['top']
@@ -92,6 +102,7 @@ def get_gtrends(keyword, location, category ):
             'rising': "",
             'top': ""
         }
+    print(related_queries)
 
     #time_interest
     interest_over_time_df = pytrend.interest_over_time()

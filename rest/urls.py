@@ -30,18 +30,18 @@ urlpatterns = [
     url(r'^autocomplete/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.autocomplete),
 
     # google trends
-    url(r'^gtrends-region/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.over_region),
-    url(r'^gtrends-time/(?P<keyword>[a-zA-Z0-9_]+)/location/(?P<location>[a-zA-Z0-9_]+)$', views_gtrends.over_time),
-    url(r'^gtrends-time-list/k1/(?P<keyword1>[a-zA-Z0-9_]+)/k2/(?P<keyword2>[a-zA-Z0-9_]+)$',
-        views_gtrends.over_time_list),
+    # url(r'^gtrends-region/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.over_region),
+    # url(r'^gtrends-time/(?P<keyword>[a-zA-Z0-9_]+)/location/(?P<location>[a-zA-Z0-9_]+)$', views_gtrends.over_time),
+    # url(r'^gtrends-time-list/k1/(?P<keyword1>[a-zA-Z0-9_]+)/k2/(?P<keyword2>[a-zA-Z0-9_]+)$',
+    #     views_gtrends.over_time_list),
     url(r'^gtrends-keyword-topic/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.cat_suggestions),
     # url(r'^google-cat-suggestions/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.cat_suggestions),
-    url(r'^google-related-queries/(?P<keyword>[a-zA-Z0-9_%]+)/location/(?P<location>[a-zA-Z0-9_]+)/category/(?P<category>[a-zA-Z0-9_]+)$',
-        views_gtrends.related_queries),
+    # url(r'^google-related-queries/(?P<keyword>[a-zA-Z0-9_%]+)/location/(?P<location>[a-zA-Z0-9_]+)/category/(?P<category>[a-zA-Z0-9_]+)$',
+    #     views_gtrends.related_queries),
     # test gtrends calls
 
     url(r'^gtrends/(?P<keyword>[a-zA-Z0-9_%]+)/location/(?P<location>[a-zA-Z]+)/category/(?P<category>[a-zA-Z0-9_]+)$', views_gtrends.gtrends),
-    url(r'^gtrends-tests/$', views_gtrends.test),
+    # url(r'^gtrends-tests/$', views_gtrends.test),
 
     # query params
     url(r'^query-parameters/$', views_queryparams.query_params_mgmt),

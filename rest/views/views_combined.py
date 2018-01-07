@@ -41,10 +41,15 @@ def discover(request, queryid, format=None):
         location = query_param['location']
         category = query_param['category']
         youtube = query_param['youtube']
-        twitter =  query_param['twitter']
+        twitter = query_param['twitter']
+        google = query_param['google']
+        start_date = query_param['start_date']
+        end_date = query_param['end_date']
 
 
-        get_gtrends_asynch = get_gtrends.delay(keyword, location, category)
+        print "query_param keyword: " + keyword
+
+        get_gtrends_asynch = get_gtrends.delay(keyword, location, category, start_date, end_date)
         trends_results = get_gtrends_asynch.get()
 
         print "## Retrieving get_related_queries ##"
@@ -55,27 +60,6 @@ def discover(request, queryid, format=None):
         region_interest_kw_dic = trends_results['interest_over_region']
 
 
-        #
-        # print "## Retrieving get_related_queries ##"
-        # related_queries_asynch = get_related_queries.delay(keyword, location, category, google_username, google_password)
-        # related_queries_result_list = related_queries_asynch.get()
-        # print "Retrieving get_related_queries - finished"
-        # # print related_queries_result_list
-        #
-        # ## Retrieving time based interest on Keyword ##
-        # print "## Retrieving time based interest ##"
-        # time_interest_kw_asynch = get_time_interest.delay(keyword, location, category, google_username, google_password)
-        # time_interest_kw_dic = time_interest_kw_asynch.get()
-        # print "Retrieving time based interest - finished"
-        #
-        # ## Retrieving region based interest on Keyword ##
-        # print "## Retrieving region based interest ##"
-        # region_interest_kw_asynch = get_region_interest.delay(keyword, category, google_username, google_password)
-        # region_interest_kw_dic = region_interest_kw_asynch.get()
-        # print "Retrieving region based interest - finished"
-
-
-
 
         # retrieve autocomplete questions
         print "## Retrieving autocomplete ##"
@@ -84,6 +68,8 @@ def discover(request, queryid, format=None):
 
         ## Retrieving adwords volume ##
         print "## Retrieving adwords volume ## for " +keyword
+        volume_list = []
+
         # Uncomment this !!!
         adwords_username = account_repo.get_adwords_username()
         adwords_password = account_repo.get_adwords_password()
@@ -91,7 +77,6 @@ def discover(request, queryid, format=None):
         keywords_volume_asynch = get_keywords_volume.delay(adwords_username, adwords_password, keyword, location)
         volume_dic = keywords_volume_asynch.get()
 
-        volume_list = []
         try:
             for x in range(0, len(volume_dic)):
                 volume = {
