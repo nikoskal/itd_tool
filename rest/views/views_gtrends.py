@@ -289,5 +289,5 @@ def cat_suggestions(request, keyword,  format=None):
     #                     status=status.HTTP_401_UNAUTHORIZED)
 
     if request.method == 'GET':
-        cat_suggestions_asynch = get_cat_suggestions.delay(keyword, google_username, google_password)
+        cat_suggestions_asynch = get_cat_suggestions.delay(keyword)
         return Response(cat_suggestions_asynch.get(), status=status.HTTP_200_OK)
