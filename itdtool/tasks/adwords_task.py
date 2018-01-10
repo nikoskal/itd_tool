@@ -32,14 +32,17 @@ def get_keywords_volume(adwords_username, adwords_password, keywd, loc_code ):
             key=keywd
         )]
     response = client.post("/v2/kwrd_sv", dict(data=keywords_list))
+    results = {}
 
     if response["status"] == "error":
         print("error. Code: %d Message: %s" % (response["error"]["code"], response["error"]["message"]))
+        results = "none"
     else:
         print('edo !!!')
         print(response["results"][0]["ms"])
+        results = response["results"][0]["ms"]
 
-    return response["results"][0]["ms"]
+    return results
 
 
 # Based on Google GeoTargets
