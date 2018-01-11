@@ -58,12 +58,15 @@ def get_gtrends(keyword, location, category, start_date, end_date ):
     # keyword = "edward snowden"
     # keyword = "war terror"
     kw_list = [keyword]
-    category = ""
+    # category = ""
 
     if location == 'none':
         location = ''
     # loc = str(location)
+    print "keyword " + keyword
     print "location "+location
+    print "category " + location
+
     timeframe = ''
 
     #  correct date format 2014-01-01T00:00:00
