@@ -18,9 +18,6 @@ import requests
 from pytrends.request import TrendReq
 
 
-
-
-
 @app.task
 def get_autocomplete(keyword):
 
@@ -53,15 +50,15 @@ def get_autocomplete(keyword):
     return results
 
 
-
-
 @app.task
 def get_gtrends(keyword, location, category, start_date, end_date ):
 
     pytrend = TrendReq()
     # keyword = "Blockchain"
     # keyword = "edward snowden"
+    # keyword = "war terror"
     kw_list = [keyword]
+    category = ""
 
     if location == 'none':
         location = ''
@@ -77,6 +74,7 @@ def get_gtrends(keyword, location, category, start_date, end_date ):
     print timeframe
 
     pytrend.build_payload(kw_list, cat=category, timeframe=timeframe, geo=location)
+    # pytrend.build_payload(kw_list,  timeframe=timeframe, geo=location)
 
     # region interest
     region_interest_df = pytrend.interest_by_region()
@@ -102,7 +100,6 @@ def get_gtrends(keyword, location, category, start_date, end_date ):
             'rising': "",
             'top': ""
         }
-    print(related_queries)
 
     #time_interest
     interest_over_time_df = pytrend.interest_over_time()
@@ -134,7 +131,6 @@ def get_gtrends(keyword, location, category, start_date, end_date ):
                }
 
     return results
-
 
 
 @app.task
@@ -252,29 +248,9 @@ def get_related_queries(keyword, location, category):
             'top': ""
         }
 
-    # print 'printing dictionary '
-    # pprint.pprint(related_queries_dict)
 
-    # print 'printing dictionary rising'
-
-    # pprint.pprint(top_df)
-    # print "edo4"
-    # print 'interest_over_time'
-
-    # pprint.pprint(interest_over_time)
-    # related_queries_json = json.dumps(related_queries_dict)
 
     return related_queries
-
-
-# @app.task
-# def get_category_suggestions(keyword,  google_username, google_password):
-#
-#     path = ""
-#     pytrend = TrendReq(google_username, google_password, custom_useragent='ITD script')
-#     suggestions = pytrend.suggestions(keyword)
-#
-#     return suggestions
 
 
 @app.task
@@ -377,14 +353,12 @@ def get_cat_suggestions(kw_list_obj):
     # kw_list_obj = 'snowden'
     kw_list = [kw_list_obj]
     # kw_list = [kw_list_obj]
-    print "task key words :" +str(kw_list)
+    print " get_cat_suggestions task key words :" +str(kw_list)
 
     # Login to Google. Only need to run this once, the rest of requests will use the same session.
     # pytrend = TrendReq(google_username, google_password, hl='en-US', custom_useragent='My Pytrends Script')
     pytrend = TrendReq()
-    # TODO add geo
-    pytrend.build_payload(kw_list, timeframe='today 5-y', geo='US', gprop='')
-    # suggestions_dict = pytrend.suggestions(keyword='pizza')
+    pytrend.build_payload(kw_list, timeframe='today 5-y')
     suggestions_dict = pytrend.suggestions(keyword = kw_list_obj)
 
     return suggestions_dict

@@ -34,7 +34,7 @@ urlpatterns = [
     # url(r'^gtrends-time/(?P<keyword>[a-zA-Z0-9_]+)/location/(?P<location>[a-zA-Z0-9_]+)$', views_gtrends.over_time),
     # url(r'^gtrends-time-list/k1/(?P<keyword1>[a-zA-Z0-9_]+)/k2/(?P<keyword2>[a-zA-Z0-9_]+)$',
     #     views_gtrends.over_time_list),
-    url(r'^gtrends-keyword-topic/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.cat_suggestions),
+    url(r'^gtrends-keyword-topic/(?P<keyword>[a-zA-Z0-9_ ]+)/$', views_gtrends.cat_suggestions),
     # url(r'^google-cat-suggestions/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.cat_suggestions),
     # url(r'^google-related-queries/(?P<keyword>[a-zA-Z0-9_%]+)/location/(?P<location>[a-zA-Z0-9_]+)/category/(?P<category>[a-zA-Z0-9_]+)$',
     #     views_gtrends.related_queries),
