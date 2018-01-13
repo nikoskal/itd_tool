@@ -45,49 +45,60 @@ def discover(request, queryid, format=None):
         google = query_param['google']
         start_date = query_param['start_date']
         end_date = query_param['end_date']
-
+        questions = query_param['questions']
 
         print "query_param keyword: " + keyword
 
-        get_gtrends_asynch = get_gtrends.delay(keyword, location, category, start_date, end_date)
-        trends_results = get_gtrends_asynch.get()
+        if google:
+            get_gtrends_asynch = get_gtrends.delay(keyword, location, category, start_date, end_date)
+            trends_results = get_gtrends_asynch.get()
 
-        print "## Retrieving get_related_queries ##"
-        related_queries_result_list = trends_results['related_queries_list']
-        print "## Retrieving time based interest ##"
-        time_interest_kw_dic = trends_results['time_interest_list']
-        print "## Retrieving region based interest ##"
-        region_interest_kw_dic = trends_results['interest_over_region']
+            print "## Retrieving get_related_queries ##"
+            related_queries_result_list = trends_results['related_queries_list']
+            print "## Retrieving time based interest ##"
+            time_interest_kw_dic = trends_results['time_interest_list']
+            print "## Retrieving region based interest ##"
+            region_interest_kw_dic = trends_results['interest_over_region']
 
 
 
-        # retrieve autocomplete questions
-        print "## Retrieving autocomplete ##"
-        autocomplete_asynch = get_autocomplete.delay(keyword)
-        print "Retrieving autocomplete - finished"
+            ## Retrieving adwords volume ##
+            print "## Retrieving adwords volume ## for " +keyword
+            volume_list = []
 
-        ## Retrieving adwords volume ##
-        print "## Retrieving adwords volume ## for " +keyword
-        volume_list = []
+            # Uncomment this !!!
+            adwords_username = account_repo.get_adwords_username()
+            adwords_password = account_repo.get_adwords_password()
 
-        # Uncomment this !!!
-        adwords_username = account_repo.get_adwords_username()
-        adwords_password = account_repo.get_adwords_password()
+            keywords_volume_asynch = get_keywords_volume.delay(adwords_username, adwords_password, keyword, location)
+            volume_dic = keywords_volume_asynch.get()
 
-        keywords_volume_asynch = get_keywords_volume.delay(adwords_username, adwords_password, keyword, location)
-        volume_dic = keywords_volume_asynch.get()
+            try:
+                for x in range(0, len(volume_dic)):
+                    volume = {
+                        "count": volume_dic[x]['count'],
+                        "year": volume_dic[x]['year'],
+                        "month": volume_dic[x]['month']
+                    }
+                    volume_list.append(volume)
+            except TypeError:
+                volume_list.append("none")
+            # Until here !!!
+        else:
+            volume_list = {}
+            related_queries_result_list = {}
+            time_interest_kw_dic = {}
+            region_interest_kw_dic = {}
 
-        try:
-            for x in range(0, len(volume_dic)):
-                volume = {
-                    "count": volume_dic[x]['count'],
-                    "year": volume_dic[x]['year'],
-                    "month": volume_dic[x]['month']
-                }
-                volume_list.append(volume)
-        except TypeError:
-            volume_list.append("none")
-        # Until here !!!
+        if questions:
+            # retrieve autocomplete questions
+            print "## Retrieving autocomplete ##"
+            autocomplete_asynch = get_autocomplete.delay(keyword)
+            autocomplete_results = autocomplete_asynch.get()
+            print autocomplete_results
+            print "Retrieving autocomplete - finished"
+        else:
+            autocomplete_results = {}
 
 
         # volume_list = [{'count': 450000, 'month': 8, 'year': 2017}, {'count': 673000, 'month': 7, 'year': 2017},
@@ -119,7 +130,7 @@ def discover(request, queryid, format=None):
                    "volume_list": volume_list,
                    "time_interest_list": time_interest_kw_dic,
                    "interest_over_region": region_interest_kw_dic,
-                   "autocomplete": autocomplete_asynch.get(),
+                   "autocomplete": autocomplete_results,
                    "tweets": twitter_result
                    }
 

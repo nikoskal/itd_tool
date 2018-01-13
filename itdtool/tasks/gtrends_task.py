@@ -13,7 +13,7 @@ from django.conf import settings
 import json
 import pprint
 import requests
-
+from xml.etree import ElementTree
 # from itdtool.requests import TrendReq
 from pytrends.request import TrendReq
 
@@ -24,29 +24,48 @@ def get_autocomplete(keyword):
     # http://suggestqueries.google.com/complete/search?client=firefox&q=is%20vettel
     results = []
     # print("get_autocomplete questions")
-
-    url = "http://suggestqueries.google.com/complete/search?client=firefox&q=is%20"+keyword
-    # print url
-    isresponse = requests.get(url)
-    jisres = isresponse.json()
-
-    # print jisres
-    jisres_reduced = jisres[1]
-    # print jisres_reduced
-
-    isresult = {"isresult":jisres_reduced}
-    results.append(isresult)
-
-    url = "http://suggestqueries.google.com/complete/search?client=firefox&q=did%20" + keyword
-    # print url
     #
-    didresponse = requests.get(url)
-    jdidres = didresponse.json()
+    # url = "http://suggestqueries.google.com/complete/search?client=firefox&q=is%20"+keyword
+    # # print url
+    # isresponse = requests.get(url)
+    # jisres = isresponse.json()
+    #
+    # # print jisres
+    # jisres_reduced = jisres[1]
+    # # print jisres_reduced
+    #
+    # isresult = {"isresult":jisres_reduced}
+    # results.append(isresult)
+    # print isresult
+    #
+    # url = "http://suggestqueries.google.com/complete/search?client=firefox&q=did%20" + keyword
+    # # print url
+    # #
+    # didresponse = requests.get(url)
+    # jdidres = didresponse.json()
     # print jdidres
-    jdidres_reduced = jdidres[1]
-    didresult = {"didresult": jdidres_reduced}
-    results.append(didresult)
+    # # print jdidres
+    # jdidres_reduced = jdidres[1]
+    # didresult = {"didresult": jdidres_reduced}
+    # results.append(didresult)
+    # print didresult
 
+
+
+    prefixes = ['who','where','when','why','what','which','how','did','is']
+
+    for question in prefixes:
+        url = "http://suggestqueries.google.com/complete/search?client=firefox&q=" + question + "%20" + keyword
+        response = requests.get(url)
+        json_response = response.json()
+        print json_response
+        # print json_response
+        json_response_reduced = json_response[1]
+        print json_response_reduced
+        xresult = {question: json_response_reduced}
+        results.append(xresult)
+
+    print results
     return results
 
 
