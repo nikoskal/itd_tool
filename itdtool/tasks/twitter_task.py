@@ -44,7 +44,7 @@ def get_tw_term(term, inference):
 
         # Also note that the search results at twitter.com may return historical results
         # while the Search API usually only serves tweets from the past week.- Twitter documentation.
-        total_items = 150
+        total_items = 50
 
         cricTweet = tweepy.Cursor(api.search, q="#"+term).items(total_items)
 
