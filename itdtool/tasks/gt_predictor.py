@@ -1,46 +1,18 @@
 from __future__ import division
-import json
-import numpy as np
-import xlrd
-from neupy import algorithms, environment
-import math
+# import json
+# import numpy as np
+# import xlrd
+# from neupy import algorithms, environment
+# import math
 import sys
 import re
-import tweepy
+# import tweepy
 import facepp
 from facepp import API, File
 import genderize
 from genderize import Genderize
 import string
 from django.conf import settings
-
-
-# limit handler for Tweepy
-# def limit_handled(cursor):
-#     while True:
-#         try:
-#             yield cursor.next()
-#         except tweepy.RateLimitError:
-#             print 'Rate Limit Error'
-#             time.sleep(15 * 60)
-#         except tweepy.error.TweepError:
-#             break
-
-
-# Tweepy API
-# def tweepy_function(ID):
-#     print "tweepy_function " + str(ID)
-#
-#     for status in limit_handled(tweepy.Cursor(tweepy_api.user_timeline, user_id=ID).items()):
-#         name = status.user.name.encode('UTF-8')
-#
-#         print name
-#         theme_color = status.user.profile_link_color
-#         # print theme_color
-#         image_url = hq_image(status.user.profile_image_url_https)
-#         return (name, image_url, theme_color)
-#     return False
-
 
 FACE_API_KEY = settings.FACE_API_KEY
 FACE_API_SECRET = settings.FACE_API_SECRET
@@ -112,48 +84,19 @@ def genderize_function(name):
 def hq_image(image_url):
     return string.replace(image_url, 'normal', '400x400')
 
-#
-# def calc_average(predictions):
-#
-#     print "calc_average!!!!!!"
-#
-#     prob_sum_m = 0.0
-#     prob_sum_f = 0.0
-#     m_count = 0
-#     f_count = 0
-#
-#     # result = {'gender': 'none','probability':0.0, 'count': 0}
-#     # result_m = {'gender': 'male', 'probability': 0.0, 'count': 0}
-#     # result_f = {'gender': 'female', 'probability': 0.0, 'count': 0}
-#
-#     for value in predictions:
-#         gender = value['gender']
-#         probability = value['probability']
-#         if gender == 'male':
-#             if probability > 0.576720127747:
-#                 m_count += 1
-#                 prob_sum_m = prob_sum_m+probability
-#
-#         if gender == 'female':
-#             if probability > 0.576720127747:
-#                 f_count += 1
-#                 prob_sum_f = prob_sum_f+probability
-#
-#     print 'male'
-#     print m_count
-#     print prob_sum_m
-#     print prob_sum_m/m_count
-#
-#     print 'female'
-#     print f_count
-#     print prob_sum_f
-#     print prob_sum_f/f_count
-#     result_f = {'gender': 'female', 'probability': prob_sum_f/f_count, 'count': f_count}
-#     result_m = {'gender': 'male', 'probability': prob_sum_m/m_count, 'count': m_count}
-#     print result_f, result_m
-#
-#     return result_f, result_m
 
+
+
+# limit handler for Tweepy
+# def limit_handled(cursor):
+#     while True:
+#         try:
+#             yield cursor.next()
+#         except tweepy.RateLimitError:
+#             print 'Rate Limit Error'
+#             time.sleep(15 * 60)
+#         except tweepy.error.TweepError:
+#             break
 
 
 
