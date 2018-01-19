@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from itdtool import account_repo
-from itdtool.tasks.twitter_task import get_tw_trends, get_tw_trends_term
+from itdtool.tasks.twitter_task import get_tw_trends, get_tw_term
 from itdtool.tasks.gtrends_task import get_cat_suggestions, get_autocomplete, get_gtrends
 
 from validate_ip import valid_ip
@@ -10,6 +10,7 @@ from validate_user import valid_user
 from itdtool.tasks.query_params_task import get_query_params_id
 from celery import chain
 from itdtool.tasks.adwords_task import get_keywords_volume
+import time
 
 
 google_username = account_repo.get_google_username()
@@ -29,6 +30,7 @@ def discover(request, queryid, format=None):
 
     if request.method == 'GET':
         print "integrated trends discovery query id: " + queryid
+        start_time = time.time()
 
         results = {}
 
@@ -46,6 +48,7 @@ def discover(request, queryid, format=None):
         start_date = query_param['start_date']
         end_date = query_param['end_date']
         questions = query_param['questions']
+        inference = query_param['inference']
 
         print "query_param keyword: " + keyword
 
@@ -115,14 +118,33 @@ def discover(request, queryid, format=None):
 
         if twitter:
             try:
-                response_asynch = get_tw_trends_term.delay(keyword)
-                twitter_result = response_asynch.get()
+                response_twt_asynch = get_tw_term.delay(keyword, inference)
+                twitter_twt_result = response_twt_asynch.get()
+                print "twitter_result finished --------"
             except :
-                twitter_result = [{"text": "too many twitter calls"}]
+                twitter_twt_result = [{"text": "error when retrieving Tweets"}]
+
+            # try:
+            #     print "twitter_sent_analysis starting  --------"
+            #     response_sent_asynch = get_tw_sentiment_term.delay(keyword)
+            #     twitter_sent_result = response_sent_asynch.get()
+            #     print "twitter_sent_analysis finished  --------"
+            #     print twitter_sent_result
+            # except:
+            #     twitter_result = [{"text": "too many twitter calls"}]
+
         else:
-            twitter_result = {}
+            twitter_twt_result = {}
         print "Retrieving twitter data - finished"
 
+        # print("--- %s seconds ---" % (time.time() - start_time))
+
+        time_duration = (time.time() - start_time)
+        time_f = str(time_duration)[:-8]
+
+
+        print "total time:"
+        print time_f
 
         ## integrate results ##
         results = {"related_queries_list": related_queries_result_list,
@@ -131,9 +153,12 @@ def discover(request, queryid, format=None):
                    "time_interest_list": time_interest_kw_dic,
                    "interest_over_region": region_interest_kw_dic,
                    "autocomplete": autocomplete_results,
-                   "tweets": twitter_result
+                   "tweets": twitter_twt_result,
+                   "time": time_f
                    }
 
+
+        # tweets results:  results = {'popular_tweets': popular_tweets, 'tweet_gender_prob':gender_prob}
         print "results:"
         print results
 

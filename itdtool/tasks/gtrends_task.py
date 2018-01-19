@@ -55,13 +55,18 @@ def get_autocomplete(keyword):
     prefixes = ['who','where','when','why','what','which','how','did','is']
 
     for question in prefixes:
+        print "QUESTION !!!!!!"
         url = "http://suggestqueries.google.com/complete/search?client=firefox&q=" + question + "%20" + keyword
+        print url
+        print question
         response = requests.get(url)
+        print response
         json_response = response.json()
         print json_response
         # print json_response
         json_response_reduced = json_response[1]
         print json_response_reduced
+        print "QUESTION FINISHED!!!!!!"
         xresult = {question: json_response_reduced}
         results.append(xresult)
 

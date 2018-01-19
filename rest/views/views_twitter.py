@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from itdtool import account_repo
-from itdtool.tasks.twitter_task import get_tw_trends, get_tw_trends_term
+from itdtool.tasks.twitter_task import get_tw_trends, get_tw_term
 from validate_ip import valid_ip
 from validate_user import valid_user
 import requests
@@ -41,6 +41,6 @@ def get_tweets_term(request, term, format=None):
         return Response("Not authorised client IP", status=status.HTTP_401_UNAUTHORIZED)
 
     if request.method == 'GET':
-        response_asynch = get_tw_trends_term.delay(term)
+        response_asynch = get_tw_term.delay(term)
         return Response(response_asynch.get(), status=status.HTTP_200_OK)
 
