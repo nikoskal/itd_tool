@@ -1,9 +1,4 @@
 from __future__ import division
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.naive_bayes import GaussianNB, MultinomialNB
-from sklearn import svm
-from sklearn import metrics
-from sklearn import preprocessing
 import json
 import numpy as np
 import xlrd
@@ -19,43 +14,33 @@ from genderize import Genderize
 import string
 from django.conf import settings
 
-# Tweepy Authentication
-# auth = tweepy.OAuthHandler('OoAnzGZoyHvjKcS29w9nRD9bF', 'uTPvvPgUBJ92TGuOkDJqu9XZZdyt495QHYhxaOtOJatc78wsaA')
-# auth.set_access_token('871785994844086274-7gbBEaw6ePbMUOFFlOc7798Bdu4QQDD',
-#                       '8etB67tfH9jxbRpZgyjDbIvavS1JzXPO5NUY3PprBlmXL')
-# tweepy_api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-
 
 # limit handler for Tweepy
-def limit_handled(cursor):
-    while True:
-        try:
-            yield cursor.next()
-        except tweepy.RateLimitError:
-            print 'Rate Limit Error'
-            time.sleep(15 * 60)
-        except tweepy.error.TweepError:
-            break
+# def limit_handled(cursor):
+#     while True:
+#         try:
+#             yield cursor.next()
+#         except tweepy.RateLimitError:
+#             print 'Rate Limit Error'
+#             time.sleep(15 * 60)
+#         except tweepy.error.TweepError:
+#             break
 
 
 # Tweepy API
-def tweepy_function(ID):
-    print "tweepy_function " + str(ID)
+# def tweepy_function(ID):
+#     print "tweepy_function " + str(ID)
+#
+#     for status in limit_handled(tweepy.Cursor(tweepy_api.user_timeline, user_id=ID).items()):
+#         name = status.user.name.encode('UTF-8')
+#
+#         print name
+#         theme_color = status.user.profile_link_color
+#         # print theme_color
+#         image_url = hq_image(status.user.profile_image_url_https)
+#         return (name, image_url, theme_color)
+#     return False
 
-    for status in limit_handled(tweepy.Cursor(tweepy_api.user_timeline, user_id=ID).items()):
-        name = status.user.name.encode('UTF-8')
-
-        print name
-        theme_color = status.user.profile_link_color
-        # print theme_color
-        image_url = hq_image(status.user.profile_image_url_https)
-        return (name, image_url, theme_color)
-    return False
-
-
-# Face++ Authentication
-# FACE_API_KEY = "pJUlY8EZZunbUM3SMf6Bi1GCV2SiLJHn"
-# FACE_API_SECRET = "QnvtLsBqBtrs8R3EcThoE-0BuH77lq_i"
 
 FACE_API_KEY = settings.FACE_API_KEY
 FACE_API_SECRET = settings.FACE_API_SECRET
@@ -63,6 +48,8 @@ api_server_international = 'https://api-us.faceplusplus.com/facepp/v3/'
 
 faceplusplus_api = API(FACE_API_KEY, FACE_API_SECRET, srv=api_server_international)
 
+# Genderize Authentication
+GENDERIZE_API_KEY = settings.GENDERIZE_API_KEY
 
 # Face++ Detect API
 def faceplusplus(image_url):
@@ -96,9 +83,7 @@ def faceplusplus(image_url):
         return 'error'
 
 
-# Genderize Authentication
-# GENDERIZE_API_KEY = '05af3ca440ee015e12fbef78d8365685'
-GENDERIZE_API_KEY = settings.GENDERIZE_API_KEY
+
 
 # Genderize API
 def genderize_function(name):
@@ -127,47 +112,47 @@ def genderize_function(name):
 def hq_image(image_url):
     return string.replace(image_url, 'normal', '400x400')
 
-
-def calc_average(predictions):
-
-    print "calc_average!!!!!!"
-
-    prob_sum_m = 0.0
-    prob_sum_f = 0.0
-    m_count = 0
-    f_count = 0
-
-    # result = {'gender': 'none','probability':0.0, 'count': 0}
-    # result_m = {'gender': 'male', 'probability': 0.0, 'count': 0}
-    # result_f = {'gender': 'female', 'probability': 0.0, 'count': 0}
-
-    for value in predictions:
-        gender = value['gender']
-        probability = value['probability']
-        if gender == 'male':
-            if probability > 0.576720127747:
-                m_count += 1
-                prob_sum_m = prob_sum_m+probability
-
-        if gender == 'female':
-            if probability > 0.576720127747:
-                f_count += 1
-                prob_sum_f = prob_sum_f+probability
-
-    print 'male'
-    print m_count
-    print prob_sum_m
-    print prob_sum_m/m_count
-
-    print 'female'
-    print f_count
-    print prob_sum_f
-    print prob_sum_f/f_count
-    result_f = {'gender': 'female', 'probability': prob_sum_f/f_count, 'count': f_count}
-    result_m = {'gender': 'male', 'probability': prob_sum_m/m_count, 'count': m_count}
-    print result_f, result_m
-
-    return result_f, result_m
+#
+# def calc_average(predictions):
+#
+#     print "calc_average!!!!!!"
+#
+#     prob_sum_m = 0.0
+#     prob_sum_f = 0.0
+#     m_count = 0
+#     f_count = 0
+#
+#     # result = {'gender': 'none','probability':0.0, 'count': 0}
+#     # result_m = {'gender': 'male', 'probability': 0.0, 'count': 0}
+#     # result_f = {'gender': 'female', 'probability': 0.0, 'count': 0}
+#
+#     for value in predictions:
+#         gender = value['gender']
+#         probability = value['probability']
+#         if gender == 'male':
+#             if probability > 0.576720127747:
+#                 m_count += 1
+#                 prob_sum_m = prob_sum_m+probability
+#
+#         if gender == 'female':
+#             if probability > 0.576720127747:
+#                 f_count += 1
+#                 prob_sum_f = prob_sum_f+probability
+#
+#     print 'male'
+#     print m_count
+#     print prob_sum_m
+#     print prob_sum_m/m_count
+#
+#     print 'female'
+#     print f_count
+#     print prob_sum_f
+#     print prob_sum_f/f_count
+#     result_f = {'gender': 'female', 'probability': prob_sum_f/f_count, 'count': f_count}
+#     result_m = {'gender': 'male', 'probability': prob_sum_m/m_count, 'count': m_count}
+#     print result_f, result_m
+#
+#     return result_f, result_m
 
 
 
