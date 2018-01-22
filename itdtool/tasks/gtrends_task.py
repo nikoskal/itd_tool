@@ -87,9 +87,9 @@ def get_gtrends(keyword, location, category, start_date, end_date ):
     if location == 'none':
         location = ''
     # loc = str(location)
-    print "keyword " + keyword
-    print "location "+location
-    print "category " + location
+    print "keyword " + str(keyword)
+    print "location "+ str(location)
+    print "category " + str(category)
 
     timeframe = ''
 

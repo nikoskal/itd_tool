@@ -11,10 +11,27 @@ from itdtool.tasks.query_params_task import get_query_params_id
 from celery import chain
 from itdtool.tasks.adwords_task import get_keywords_volume
 import time
+import json
 
 
 google_username = account_repo.get_google_username()
 google_password = account_repo.get_google_password()
+
+@api_view(['GET'])
+# @authentication_classes((TokenAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
+def discover_test(request, queryid, format=None):
+    """
+    Fake results, used only for testing
+
+    """
+    if request.method == 'GET':
+        print "testing integrated trends discovery query id: " + queryid
+        results = {}
+        results = json.load(open('results.txt'))
+        print results
+        return Response(results, status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 # @authentication_classes((TokenAuthentication, BasicAuthentication))
@@ -31,14 +48,11 @@ def discover(request, queryid, format=None):
     if request.method == 'GET':
         print "integrated trends discovery query id: " + queryid
         start_time = time.time()
-
         results = {}
-
         # query_param = get_query_params_id.delay(id)
         query_param = get_query_params_id(queryid)
         print "query params:"
         print query_param
-
         keyword = query_param['keywords']
         location = query_param['location']
         category = query_param['category']
@@ -49,9 +63,7 @@ def discover(request, queryid, format=None):
         end_date = query_param['end_date']
         questions = query_param['questions']
         inference = query_param['inference']
-
         print "query_param keyword: " + keyword
-
         if google:
             get_gtrends_asynch = get_gtrends.delay(keyword, location, category, start_date, end_date)
             trends_results = get_gtrends_asynch.get()
@@ -92,7 +104,6 @@ def discover(request, queryid, format=None):
             related_queries_result_list = {}
             time_interest_kw_dic = {}
             region_interest_kw_dic = {}
-
         if questions:
             # retrieve autocomplete questions
             print "## Retrieving autocomplete ##"
@@ -103,19 +114,14 @@ def discover(request, queryid, format=None):
         else:
             autocomplete_results = {}
 
-
         # volume_list = [{'count': 450000, 'month': 8, 'year': 2017}, {'count': 673000, 'month': 7, 'year': 2017},
         #  {'count': 450000, 'month': 6, 'year': 2017}, {'count': 550000, 'month': 5, 'year': 2017},
         #  {'count': 673000, 'month': 4, 'year': 2017}, {'count': 823000, 'month': 3, 'year': 2017},
         #  {'count': 1000000, 'month': 2, 'year': 2017}, {'count': 1830000, 'month': 1, 'year': 2017},
         #  {'count': 2240000, 'month': 12, 'year': 2016}, {'count': 2240000, 'month': 11, 'year': 2016},
         #  {'count': 1830000, 'month': 10, 'year': 2016}, {'count': 3350000, 'month': 9, 'year': 2016}]
-
         print "Retrieving adwords volume - finished"
-
-
         print "## Retrieving twitter data ##"
-
         if twitter:
             try:
                 response_twt_asynch = get_tw_term.delay(keyword, inference)
@@ -136,17 +142,13 @@ def discover(request, queryid, format=None):
         else:
             twitter_twt_result = {}
         print "Retrieving twitter data - finished"
-
         # print("--- %s seconds ---" % (time.time() - start_time))
-
         time_duration = (time.time() - start_time)
         time_f = str(time_duration)[:-8]
-
-
         print "total time:"
         print time_f
-
         ## integrate results ##
+
         results = {"related_queries_list": related_queries_result_list,
                    # "related_queries_list_youtube": related_queries_youtube_result_list,
                    "volume_list": volume_list,
@@ -157,10 +159,16 @@ def discover(request, queryid, format=None):
                    "time": time_f
                    }
 
-
         # tweets results:  results = {'popular_tweets': popular_tweets, 'tweet_gender_prob':gender_prob}
         print "results:"
         print results
+        print "-----"
+        filename = keyword+"_results.txt"
+        print filename
+        with open(filename, 'w') as outfile:
+            json.dump(results, outfile)
+
+
 
         return Response(results, status=status.HTTP_200_OK)
 
@@ -195,4 +203,6 @@ def discover(request, queryid, format=None):
 #         concat = 'twitter:' + twitt_results+ " gtrends:"+kws_result
 #
 #         return Response(concat, status=status.HTTP_200_OK)
+
+
 
