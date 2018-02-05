@@ -75,21 +75,22 @@ def get_tw_term(term, inference):
                 tweeter_users_ids.append(tweet.user.id_str)
 
             if "RT @" not in tweet.text:
-                if (tweet.retweet_count > 1) or (tweet.favorite_count > 1):
-                    tweet = {
-                            "id": tweet.user.id_str,
-                            "user": tweet.user.name,
-                            "text": tweet.text,
-                            "favs": tweet.favorite_count,
-                            "retweets": tweet.retweet_count,
-                            "created": tweet.created_at}
-                    popular_tweets.append(tweet)
+                # if (tweet.retweet_count > 1) or (tweet.favorite_count > 1):
+                tweet = {
+                        "id": tweet.user.id_str,
+                        "user": tweet.user.name,
+                        "text": tweet.text,
+                        "favs": tweet.favorite_count,
+                        "retweets": tweet.retweet_count,
+                        "created": tweet.created_at}
+                popular_tweets.append(tweet)
 
         # print "sentiment analysis on tweets"
         # print len(text_tweets)
         # need to apply filters for bots that just search for trending topics and send spam tweets.
         # e.g. filter tweets and keep only one tweet per user
-
+        print "popular_tweets ----- "
+        print popular_tweets
         # for text in text_tweets:
         #     print "#######start"
         #     print text
