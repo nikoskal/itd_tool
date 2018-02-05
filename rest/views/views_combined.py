@@ -162,13 +162,15 @@ def discover(request, queryid, format=None):
                    }
 
         # tweets results:  results = {'popular_tweets': popular_tweets, 'tweet_gender_prob':gender_prob}
-        print "results:"
-        print results
-        print "-----"
-        filename = keyword+"_results.txt"
-        print filename
-        with open(filename, 'w') as outfile:
-            json.dump(results, outfile)
+        # print "results:"
+        # print results
+        # print "-----"
+
+        # dump to local file
+        # filename = keyword+"_results.txt"
+        # print filename
+        # with open(filename, 'w') as outfile:
+        #     json.dump(results, outfile)
 
         username = 'nikosk'
         json_results = json.dumps(results)
