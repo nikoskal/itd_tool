@@ -44,9 +44,12 @@ def get_tw_term(term, inference):
 
         # Also note that the search results at twitter.com may return historical results
         # while the Search API usually only serves tweets from the past week.- Twitter documentation.
-        total_items = 150
+        total_items = 20
 
-        cricTweet = tweepy.Cursor(api.search, q="#"+term).items(total_items)
+        cricTweet = tweepy.Cursor(api.search, q=term).items(total_items)
+
+        # cricTweet2 = tweepy.Cursor(api.search, q="#" + term).items(total_items)
+
 
         print "retrieving  tweets --------- "
         popular_tweets = []
@@ -72,7 +75,7 @@ def get_tw_term(term, inference):
                 tweeter_users_ids.append(tweet.user.id_str)
 
             if "RT @" not in tweet.text:
-                if (tweet.retweet_count > 3) or (tweet.favorite_count > 3):
+                if (tweet.retweet_count > 1) or (tweet.favorite_count > 1):
                     tweet = {
                             "id": tweet.user.id_str,
                             "user": tweet.user.name,

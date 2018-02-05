@@ -10,6 +10,7 @@ from validate_user import valid_user
 from itdtool.tasks.query_params_task import get_query_params_id
 from celery import chain
 from itdtool.tasks.adwords_task import get_keywords_volume
+from itdtool.tasks.history_task import add_history
 import time
 import json
 
@@ -53,6 +54,7 @@ def discover(request, queryid, format=None):
         query_param = get_query_params_id(queryid)
         print "query params:"
         print query_param
+        description = query_param['description']
         keyword = query_param['keywords']
         location = query_param['location']
         category = query_param['category']
@@ -168,8 +170,14 @@ def discover(request, queryid, format=None):
         with open(filename, 'w') as outfile:
             json.dump(results, outfile)
 
+        username = 'nikosk'
+        json_results = json.dumps(results)
+        # json_results = "fooo"
 
-
+        add_history.delay(queryid, keyword, description, username, json_results)
+        print "len"
+        print len(json_results)
+        print "done"
         return Response(results, status=status.HTTP_200_OK)
 
 # @api_view(['GET'])

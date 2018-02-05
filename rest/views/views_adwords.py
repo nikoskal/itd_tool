@@ -23,7 +23,7 @@ def keywords_volume(request, keywd, loc_name, format=None):
         return Response("Not authorised client IP", status=status.HTTP_401_UNAUTHORIZED)
 
     print "in view:" + str(keywd)
-
+    # keywd = "sebastian vettel"
     if request.method == 'GET':
 
         related_keywords_asynch = get_keywords_volume.delay(adwords_username,adwords_password, keywd, loc_name )

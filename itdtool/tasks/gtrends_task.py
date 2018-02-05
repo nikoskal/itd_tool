@@ -67,7 +67,7 @@ def get_autocomplete(keyword):
         json_response_reduced = json_response[1]
         print json_response_reduced
         print "QUESTION FINISHED!!!!!!"
-        xresult = {question: json_response_reduced}
+        xresult = {'question': question,'result':json_response_reduced}
         results.append(xresult)
 
     print results

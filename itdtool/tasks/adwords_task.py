@@ -9,11 +9,11 @@ def get_keywords_volume(adwords_username, adwords_password, keywd, loc_code ):
     # client = RestClient("login", "password")
 
     print "keyword:" + str(keywd)
-    print "loc_name:" + str(loc_code)
+    print "loc_input:" + str(loc_code)
     # print "adwords_username:" + str(adwords_username)
     # print "adwords_password:" + str(adwords_password)
 
-    pprint('---')
+    # pprint('---')
     loc_can = ""
     # pprint(loc_var[0]['Code'])
     # pprint(loc_var[0]['Name'])
@@ -22,7 +22,7 @@ def get_keywords_volume(adwords_username, adwords_password, keywd, loc_code ):
             loc_can = item['Name']
             # print "done"
 
-    print loc_can
+    print "loc_canonical:" + str(loc_can)
 
     client = RestClient(adwords_username, adwords_password)
     keywords_list = [

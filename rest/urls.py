@@ -5,7 +5,6 @@ from rest_framework.authtoken import views
 from rest.views import views_gtrends, views_queryparams, views_twitter, views_combined, views_adwords, views_history
 
 
-
 urlpatterns = [
 
     #################################################
@@ -13,14 +12,15 @@ urlpatterns = [
     #################################################
 
     # history
-    url(r'^history/(?P<queryid>[0-9_]+)$', views_history.history),
+    url(r'^history/$', views_history.history),
+    url(r'^history/(?P<history_id>[0-9_]+)/$', views_history.history_id),
     url(r'^discover_test/(?P<queryid>[0-9_]+)$', views_combined.discover_test),
 
     # integrated query
     url(r'^discover/(?P<queryid>[0-9_]+)$', views_combined.discover),
 
     # adwords
-    url(r'^google-adwords/(?P<keywd>[a-zA-Z0-9_]+)/location/(?P<loc_name>[a-zA-Z0-9_]+)$', views_adwords.keywords_volume),
+    url(r'^google-adwords/(?P<keywd>[a-zA-Z0-9_ ]+)/location/(?P<loc_name>[a-zA-Z0-9_]+)$', views_adwords.keywords_volume),
 
     # twitter
     url(r'^twitter-trends-location/(?P<place_id>[a-zA-Z0-9_]+)/$', views_twitter.get_trends_location),

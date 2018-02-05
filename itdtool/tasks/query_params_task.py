@@ -84,8 +84,9 @@ def add_query_params(description, keywords, location, start_date, end_date, infe
 def get_all_query_params():
     from itdtool.models import QueryParameters
 
-    query_parameters_all = QueryParameters.objects.all()
-    print query_parameters_all
+    query_parameters_all_rev = QueryParameters.objects.all()
+    # print query_parameters_all
+    query_parameters_all = list(reversed(query_parameters_all_rev))
     results = []
     # print "saved:" + str(query_parameters)
 
