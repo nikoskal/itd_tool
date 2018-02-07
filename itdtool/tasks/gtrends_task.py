@@ -104,13 +104,19 @@ def get_gtrends(keyword, location, category, start_date, end_date ):
     # pytrend.build_payload(kw_list,  timeframe=timeframe, geo=location)
 
     # region interest
-    region_interest_df = pytrend.interest_by_region()
-    region_interest = region_interest_df[keyword]
-    region_result = []
-    for region in region_interest.keys():
-        d = {"region": region,
+    try:
+        region_interest_df = pytrend.interest_by_region()
+
+
+        region_interest = region_interest_df[keyword]
+        region_result = []
+        for region in region_interest.keys():
+            d = {"region": region,
              "interest": region_interest_df[keyword][region]}
-        region_result.append(d)
+            region_result.append(d)
+    except :
+        region_result = [{"region":"none","interest":"none" }]
+
 
     # related_queries
     try:

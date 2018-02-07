@@ -89,6 +89,11 @@ def discover(request, queryid, format=None):
 
             keywords_volume_asynch = get_keywords_volume.delay(adwords_username, adwords_password, keyword, location)
             volume_dic = keywords_volume_asynch.get()
+            print "keyword volume ????"
+            print volume_dic
+            print "-------"
+
+
 
             try:
                 for x in range(0, len(volume_dic)):
@@ -106,6 +111,9 @@ def discover(request, queryid, format=None):
             related_queries_result_list = {}
             time_interest_kw_dic = {}
             region_interest_kw_dic = {}
+
+
+
         if questions:
             # retrieve autocomplete questions
             print "## Retrieving autocomplete ##"
