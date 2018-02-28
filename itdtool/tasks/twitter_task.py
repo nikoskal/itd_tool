@@ -102,13 +102,25 @@ def get_tw_sentiment(all_tweets):
 
     df_total_tweets_sentiment_pos = df_total_tweets_sentiment[df_total_tweets_sentiment.sentiment == 'Positive']
     total_score_pos = df_total_tweets_sentiment_pos['score'].sum()
-    average_score_pos = total_score_pos/len(df_total_tweets_sentiment_pos)
+
+    print df_total_tweets_sentiment_pos
+    if math.isnan(len(df_total_tweets_sentiment_pos)):
+        average_score_pos = 0.0
+    else:
+        average_score_pos = total_score_pos / len(df_total_tweets_sentiment_pos)
+
     if math.isnan(average_score_pos):
         average_score_pos = 0.0
 
     df_total_tweets_sentiment_neg = df_total_tweets_sentiment[df_total_tweets_sentiment.sentiment == 'Negative']
     total_score_neg = df_total_tweets_sentiment_neg['score'].sum()
-    average_score_neg = total_score_neg/len(df_total_tweets_sentiment_neg)
+
+
+    if math.isnan(len(df_total_tweets_sentiment_neg)):
+        average_score_neg = 0.0
+    else:
+        average_score_neg = total_score_neg / len(df_total_tweets_sentiment_neg)
+
     if math.isnan(average_score_neg):
         average_score_neg = 0.0
 

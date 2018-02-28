@@ -144,7 +144,7 @@ def discover(request, queryid, format=None):
 
             auth = account_repo.get_twitter_auth()
             api = API(auth)
-            number_of_tweets = 100
+            number_of_tweets = 120
             cricTweet = tweepy.Cursor(api.search, q=keyword, tweet_mode='extended', result_type='popular').items(
                 number_of_tweets)
 
