@@ -1,18 +1,24 @@
+from __future__ import division
+
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from itdtool import account_repo
-from itdtool.tasks.twitter_task import get_tw_trends, get_tw_term
+from itdtool.tasks.twitter_task import get_tw_sentiment, get_tw_gender
 from itdtool.tasks.gtrends_task import get_cat_suggestions, get_autocomplete, get_gtrends
 
 from validate_ip import valid_ip
 from validate_user import valid_user
 from itdtool.tasks.query_params_task import get_query_params_id
-from celery import chain
 from itdtool.tasks.adwords_task import get_keywords_volume
 from itdtool.tasks.history_task import add_history
 import time
 import json
+from tweepy import API
+import tweepy
+import string
+
+
 
 
 google_username = account_repo.get_google_username()
@@ -65,6 +71,9 @@ def discover(request, queryid, format=None):
         end_date = query_param['end_date']
         questions = query_param['questions']
         inference = query_param['inference']
+        # sentiment = query_param['sentiment']
+
+
         print "query_param keyword: " + keyword
         if google:
             get_gtrends_asynch = get_gtrends.delay(keyword, location, category, start_date, end_date)
@@ -76,8 +85,6 @@ def discover(request, queryid, format=None):
             time_interest_kw_dic = trends_results['time_interest_list']
             print "## Retrieving region based interest ##"
             region_interest_kw_dic = trends_results['interest_over_region']
-
-
 
             ## Retrieving adwords volume ##
             print "## Retrieving adwords volume ## for " +keyword
@@ -92,9 +99,6 @@ def discover(request, queryid, format=None):
             print "keyword volume ????"
             print volume_dic
             print "-------"
-
-
-
             try:
                 for x in range(0, len(volume_dic)):
                     volume = {
@@ -133,24 +137,89 @@ def discover(request, queryid, format=None):
         print "Retrieving adwords volume - finished"
         print "## Retrieving twitter data ##"
         if twitter:
-            try:
-                response_twt_asynch = get_tw_term.delay(keyword, inference)
-                twitter_twt_result = response_twt_asynch.get()
-                print "twitter_result finished --------"
-            except :
-                twitter_twt_result = [{"text": "error when retrieving Tweets"}]
+
+            # chain = (task1.s() | task2.s(r1) | task3.s(r2)).apply_async()
+            # get_tweets_term
+            # chain = (get_tweets_term.s(keyword,100) | get_tw_term(inference) ).apply_async()
+
+            auth = account_repo.get_twitter_auth()
+            api = API(auth)
+            number_of_tweets = 100
+            cricTweet = tweepy.Cursor(api.search, q=keyword, tweet_mode='extended', result_type='popular').items(
+                number_of_tweets)
+
+            # gender inference
+            ans_list = {}
+            popular_tweets = []
+            tweet_sentiment_all = []
+            twitter_sentiment_top_result = []
+            # create dictionaries from initial tweets dataset
+            for tweet in cricTweet:
+                # gender
+                image_url = hq_image(tweet.user.profile_image_url_https)
+                ans_list[tweet.user.id_str] = (tweet.user.name, image_url)
+                # sentiment
+                tweet_sentiment = {}
+                tweet_sentiment["user"] = tweet.user.name
+                tweet_sentiment["text"] = tweet.full_text
+                tweet_sentiment["favs"] = tweet.favorite_count
+                tweet_sentiment["retweets"] = tweet.retweet_count
+                tweet_sentiment["created"] = tweet.created_at.isoformat()
+                tweet_sentiment_all.append(tweet_sentiment)
+
+                if "RT @" not in tweet.full_text:
+                    tweet = {
+                        "id": tweet.user.id_str,
+                        "user": tweet.user.name,
+                        "text": tweet.full_text,
+                        "favs": tweet.favorite_count,
+                        "retweets": tweet.retweet_count,
+                        "created": tweet.created_at.isoformat()}
+                    popular_tweets.append(tweet)
+
+            if inference:
+                response_gender_asynch = get_tw_gender.delay(ans_list)
+                twitter_gender_result = response_gender_asynch.get()
+
+                response_sent_asynch = get_tw_sentiment.delay(tweet_sentiment_all)
+                twitter_sentiment_result = response_sent_asynch.get()
+
+            else:
+                twitter_gender_result = {}
+                twitter_sentiment_result = {}
+
+            # response_twt_asynch = get_tw_term.delay(cricTweet, inference)
+            # twitter_gender_top_result = response_twt_asynch.get()
+
+            twitter_twt_result = {'popular_tweets': popular_tweets, 'tweet_gender_prob': twitter_gender_result,
+                                  'twitter_sentiment_top_result': twitter_sentiment_result}
+
+            print "twitter_twt_result finished --------"
+            print twitter_twt_result
+            print "----------------"
 
             # try:
-            #     print "twitter_sent_analysis starting  --------"
-            #     response_sent_asynch = get_tw_sentiment_term.delay(keyword)
-            #     twitter_sent_result = response_sent_asynch.get()
-            #     print "twitter_sent_analysis finished  --------"
-            #     print twitter_sent_result
+            #     response_twt_asynch = get_tw_term.delay(cricTweet, inference)
+            #     twitter_gender_top_result = response_twt_asynch.get()
+            #     print "twitter_gender finished --------"
             # except:
-            #     twitter_result = [{"text": "too many twitter calls"}]
+            #     twitter_gender_top_result = [{"text": "error when retrieving Tweets"}]
 
+
+            # try:
+            #     response_twt_asynch = get_tw_sentiment_term.delay(cricTweet)
+            #     twitter_sentiment_top_result = response_twt_asynch.get()
+            #     print "twitter_sentiment finished --------"
+            # except:
+            #     twitter_sentiment_top_result = [{"text": "error when retrieving Tweets"}]
+
+
+            # twitter_twt_result = {'twitter_gender_top_result': twitter_gender_top_result,
+            #                       'twitter_sentiment_top_result': twitter_sentiment_top_result}
         else:
             twitter_twt_result = {}
+
+        # results = {'popular_tweets': popular_tweets, 'tweet_gender_prob': gender_prob}
         print "Retrieving twitter data - finished"
         # print("--- %s seconds ---" % (time.time() - start_time))
         time_duration = (time.time() - start_time)
@@ -169,10 +238,8 @@ def discover(request, queryid, format=None):
                    "time": time_f
                    }
 
-        # tweets results:  results = {'popular_tweets': popular_tweets, 'tweet_gender_prob':gender_prob}
-        # print "results:"
-        # print results
-        # print "-----"
+        print "results:"
+        print results
 
         # dump to local file
         # filename = keyword+"_results.txt"
@@ -181,46 +248,19 @@ def discover(request, queryid, format=None):
         #     json.dump(results, outfile)
 
         username = 'nikosk'
+        # print "json results:"
         json_results = json.dumps(results)
-        # json_results = "fooo"
-
+        # print json_results
+        # print "saving to history"
         add_history.delay(queryid, keyword, description, username, json_results)
-        print "len"
-        print len(json_results)
-        print "done"
+        # print "saved"
+
+        # print json_results
+        # print "done"
         return Response(results, status=status.HTTP_200_OK)
 
-# @api_view(['GET'])
-# # @authentication_classes((TokenAuthentication, BasicAuthentication))
-# # @permission_classes((IsAuthenticated,))
-# def get_combined(request, format=None):
-#     """
-#     Make sequencial calls
-#
-#     """
-#     ip_address = request.META['REMOTE_ADDR']
-#     if valid_ip(ip_address) is False:
-#         return Response("Not authorised client IP", status=status.HTTP_401_UNAUTHORIZED)
-#
-#     if request.method == 'GET':
-#         place_id = 721943
-#
-#         # res = chain(twitter_trends_location_asynch = get_tw_trends.delay(place_id), get_related_keywords)()
-#         # res.get()
-#
-#         twitter_trends_location_asynch = get_tw_trends.delay(place_id)
-#         suggested_kws_asynch = get_related_keywords.delay("obama")
-#
-#
-#         twitt_results = str(twitter_trends_location_asynch.get())
-#         print "twitter_trends_location_asynch: " + twitt_results
-#
-#         kws_result = str(suggested_kws_asynch)
-#         print "suggested_kws_asynch: " + kws_result
-#
-#         concat = 'twitter:' + twitt_results+ " gtrends:"+kws_result
-#
-#         return Response(concat, status=status.HTTP_200_OK)
 
 
+def hq_image(image_url):
+    return string.replace(image_url, 'normal', '400x400')
 

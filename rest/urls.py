@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^history/$', views_history.history),
     url(r'^history/(?P<history_id>[0-9_]+)/$', views_history.history_id),
     url(r'^discover_test/(?P<queryid>[0-9_]+)$', views_combined.discover_test),
+    # url(r'^sentiment_test/(?P<keyword>[a-zA-Z0-9_]+)$', views_combined.sentiment_test),
 
     # integrated query
     url(r'^discover/(?P<queryid>[0-9_]+)$', views_combined.discover),

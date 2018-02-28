@@ -111,9 +111,10 @@ def get_gtrends(keyword, location, category, start_date, end_date ):
         region_interest = region_interest_df[keyword]
         region_result = []
         for region in region_interest.keys():
-            d = {"region": region,
-             "interest": region_interest_df[keyword][region]}
-            region_result.append(d)
+            if region_interest_df[keyword][region] > 0.0 :
+                d = {"region": region,
+                "interest": region_interest_df[keyword][region]}
+                region_result.append(d)
     except :
         region_result = [{"region":"none","interest":"none" }]
 

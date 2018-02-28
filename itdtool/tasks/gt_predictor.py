@@ -14,6 +14,7 @@ from genderize import Genderize
 import string
 from django.conf import settings
 
+
 FACE_API_KEY = settings.FACE_API_KEY
 FACE_API_SECRET = settings.FACE_API_SECRET
 api_server_international = 'https://api-us.faceplusplus.com/facepp/v3/'
