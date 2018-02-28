@@ -24,8 +24,8 @@ urlpatterns = [
     url(r'^google-adwords/(?P<keywd>[a-zA-Z0-9_ ]+)/location/(?P<loc_name>[a-zA-Z0-9_]+)$', views_adwords.keywords_volume),
 
     # twitter
-    url(r'^twitter-trends-location/(?P<place_id>[a-zA-Z0-9_]+)/$', views_twitter.get_trends_location),
-    url(r'^twitter-tweets-term/(?P<term>[a-zA-Z0-9_]+)/$', views_twitter.get_tweets_term),
+    # url(r'^twitter-trends-location/(?P<place_id>[a-zA-Z0-9_]+)/$', views_twitter.get_trends_location),
+    # url(r'^twitter-tweets-term/(?P<term>[a-zA-Z0-9_]+)/$', views_twitter.get_tweets_term),
 
     # autocomplete
     url(r'^autocomplete/(?P<keyword>[a-zA-Z0-9_]+)/$', views_gtrends.autocomplete),

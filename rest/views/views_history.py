@@ -2,14 +2,11 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from itdtool import account_repo
-from itdtool.tasks.twitter_task import get_tw_trends, get_tw_term
-from itdtool.tasks.gtrends_task import get_cat_suggestions, get_time_interest, get_region_interest, \
-    get_related_queries,get_autocomplete
 
 from validate_ip import valid_ip
 from validate_user import valid_user
 from itdtool.tasks.history_task import get_all_history, get_history_item, delete_history
-from celery import chain
+
 
 
 
