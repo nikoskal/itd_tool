@@ -43,6 +43,83 @@ def discover_test(request, queryid, format=None):
 @api_view(['GET'])
 # @authentication_classes((TokenAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
+def discover_test_gender(request, keyword, format=None):
+    """
+    Fake results, used only for testing
+
+    """
+    if request.method == 'GET':
+        print "testing gender test: " + keyword
+        inference = True
+
+        auth = account_repo.get_twitter_auth()
+        api = API(auth)
+        number_of_tweets = 20
+        cricTweet = tweepy.Cursor(api.search, q=keyword, tweet_mode='extended', result_type='popular').items(
+            number_of_tweets)
+
+        # gender inference
+        ans_list = {}
+        popular_tweets = []
+        tweet_sentiment_all = []
+        twitter_sentiment_top_result = []
+        # create dictionaries from initial tweets dataset
+        for tweet in cricTweet:
+            # gender
+            image_url = hq_image(tweet.user.profile_image_url_https)
+            ans_list[tweet.user.id_str] = (tweet.user.name, image_url)
+            # sentiment
+            tweet_sentiment = {}
+            tweet_sentiment["user"] = tweet.user.name
+            tweet_sentiment["text"] = tweet.full_text
+            tweet_sentiment["favs"] = tweet.favorite_count
+            tweet_sentiment["retweets"] = tweet.retweet_count
+            tweet_sentiment["created"] = tweet.created_at.isoformat()
+            tweet_sentiment_all.append(tweet_sentiment)
+
+            if "RT @" not in tweet.full_text:
+                tweet = {
+                    "id": tweet.user.id_str,
+                    "user": tweet.user.name,
+                    "text": tweet.full_text,
+                    "favs": tweet.favorite_count,
+                    "retweets": tweet.retweet_count,
+                    "created": tweet.created_at.isoformat()}
+                popular_tweets.append(tweet)
+
+        if inference:
+            response_gender_asynch = get_tw_gender.delay(ans_list)
+            twitter_gender_result = response_gender_asynch.get()
+
+            response_sent_asynch = get_tw_sentiment.delay(tweet_sentiment_all)
+            twitter_sentiment_result = response_sent_asynch.get()
+
+        else:
+            twitter_gender_result = {}
+            twitter_sentiment_result = {}
+
+        # response_twt_asynch = get_tw_term.delay(cricTweet, inference)
+        # twitter_gender_top_result = response_twt_asynch.get()
+
+        twitter_twt_result = {'popular_tweets': popular_tweets, 'tweet_gender_prob': twitter_gender_result,
+                              'twitter_sentiment_top_result': twitter_sentiment_result}
+
+        print "twitter_twt_result finished --------"
+        print twitter_twt_result
+        print "----------------"
+
+    else:
+        twitter_twt_result = {}
+
+
+
+        print twitter_twt_result
+        return Response(twitter_twt_result, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+# @authentication_classes((TokenAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
 def discover(request, queryid, format=None):
     """
     Make integrated trends discovery

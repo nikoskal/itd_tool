@@ -45,9 +45,9 @@ def faceplusplus(image_url):
             if has_male and has_female:
                 return 'unknown'
             elif has_male:
-                return 'M'
+                return 'male'
             else:
-                return 'F'
+                return 'female'
     except facepp.APIError as w:
         print w
         return 'error'
@@ -127,29 +127,32 @@ def predict_gender_average(tw_users_list):
             print "----start-----"
             print "name " + str(name)
             # call Genderize based on name
+            # (genderize_gender, genderize_count, genderize_probability) = genderize_function(name)
 
             try:
                 (genderize_gender, genderize_count, genderize_probability) = genderize_function(name)
             except:
+                print "!!!!Exception on Genderize utilisation"
                 pass
 
-            print "genderize"
             print genderize_gender, genderize_count, genderize_probability
 
-            if genderize_gender != "unknown" and genderize_probability >= 0.7 and genderize_count >= 80:
-                res = {'id':key,'name':name, 'gender': genderize_gender, 'probability': genderize_probability,'inf':'genderize'}
+            if genderize_gender != "unknown" and genderize_probability >= 0.7 and genderize_count >= 20:
+                res = {'id': key,'name': name, 'gender': genderize_gender, 'probability': genderize_probability, 'inf': 'genderize'}
                 gendel_list_prob.append(res)
-            else:
+
+            if genderize_gender == "unknown" or genderize_probability < 0.7 or genderize_count < 20:
                 print "Calling Face++"
                 print "image_url " + str(image_url)
                 facepp_gender = faceplusplus(image_url)
                 print facepp_gender
-                # TODO find the appropriate mean value for probability
-                res = {'id': key, 'name': name, 'gender': genderize_gender, 'probability': 0.75, 'inf':'facepp'}
-                gendel_list_prob.append(res)
+                if facepp_gender:
+                    res = {'id': key, 'name': name, 'gender': facepp_gender, 'probability': 0.7, 'inf':'facepp'}
+                    gendel_list_prob.append(res)
 
 
-    print "finished"
+
+    print "--- finished"
     print gendel_list_prob
     total = len(gendel_list_prob)
     total_male, total_female, total_unk = 0, 0, 0
