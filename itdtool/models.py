@@ -60,3 +60,5 @@ class HistoryModel (models.Model):
     results = models.TextField()
     execution_date = models.DateTimeField(auto_now=True)
     keyword = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField()

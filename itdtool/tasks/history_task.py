@@ -56,12 +56,6 @@ def get_history_item(id):
             "keyword": history.keyword
         }
 
-
-
-
-
-
-
     return one_result
 
 
@@ -81,14 +75,15 @@ def delete_history(id):
 
 
 @app.task
-def add_history(query_id, keyword, query_desc, user_name, results):
+def add_history(query_id, keyword, query_desc, user_name, results, start_date, end_date):
 
     print "saved user_name:" + str(user_name)
     print "saved query_id:" + str(query_id)
     print "saved results:" + str(results)
+    # 2012-01-01T00:00:00 --> 2012-01-01
 
     history_parameters = HistoryModel(keyword=keyword, query_id=query_id, user_name=user_name, results=results,
-                                      query_desc=query_desc)
+                                      query_desc=query_desc, start_date=start_date[:-9], end_date=end_date[:-9])
     history_parameters.save()
     print "saved:"
     print "done:"
@@ -111,7 +106,9 @@ def get_all_history():
             "user_name": history.user_name,
             "execution_date": history.execution_date,
             "results": history.results,
-            "keyword": history.keyword
+            "keyword": history.keyword,
+            "start_date": history.start_date,
+            "end_date": history.end_date
         }
         results.append(one_result)
 

@@ -198,24 +198,6 @@ def discover(request, queryid, format=None):
             print twitter_twt_result
             print "----------------"
 
-            # try:
-            #     response_twt_asynch = get_tw_term.delay(cricTweet, inference)
-            #     twitter_gender_top_result = response_twt_asynch.get()
-            #     print "twitter_gender finished --------"
-            # except:
-            #     twitter_gender_top_result = [{"text": "error when retrieving Tweets"}]
-
-
-            # try:
-            #     response_twt_asynch = get_tw_sentiment_term.delay(cricTweet)
-            #     twitter_sentiment_top_result = response_twt_asynch.get()
-            #     print "twitter_sentiment finished --------"
-            # except:
-            #     twitter_sentiment_top_result = [{"text": "error when retrieving Tweets"}]
-
-
-            # twitter_twt_result = {'twitter_gender_top_result': twitter_gender_top_result,
-            #                       'twitter_sentiment_top_result': twitter_sentiment_top_result}
         else:
             twitter_twt_result = {}
 
@@ -252,13 +234,12 @@ def discover(request, queryid, format=None):
         json_results = json.dumps(results)
         # print json_results
         # print "saving to history"
-        add_history.delay(queryid, keyword, description, username, json_results)
+        add_history.delay(queryid, keyword, description, username, json_results, start_date, end_date)
         # print "saved"
 
         # print json_results
         # print "done"
         return Response(results, status=status.HTTP_200_OK)
-
 
 
 def hq_image(image_url):
