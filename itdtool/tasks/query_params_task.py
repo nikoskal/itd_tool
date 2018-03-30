@@ -22,8 +22,8 @@ def get_query_params_id(id):
         "inference": "",
         "questions": "",
         "category": "",
-        "topic": ""
-
+        "topic": "",
+        "authid": ""
     }
 
     for query_parameter in query_parameters:
@@ -40,7 +40,8 @@ def get_query_params_id(id):
             "twitter":query_parameter.twitter,
             "youtube": query_parameter.youtube,
             "category": query_parameter.category,
-            "topic": query_parameter.topic
+            "topic": query_parameter.topic,
+            "authid": query_parameter.authid
         }
 
 
@@ -59,7 +60,7 @@ def delete_query_params_id(id):
 
 @app.task
 def add_query_params(description, keywords, location, start_date, end_date, inference, questions,twitter, google,youtube,
-                     category, topic):
+                     category, topic, authid):
     from itdtool.models import QueryParameters
     # description = models.TextField()
     # sources = models.CharField(max_length=30) #["Twitter", "Google", "Youtube"]
@@ -73,7 +74,7 @@ def add_query_params(description, keywords, location, start_date, end_date, infe
                                        start_date=start_date, end_date=end_date, inference=inference,
                                        questions=questions,twitter=twitter, google=google,youtube=youtube,
                                        category=category,
-                                       topic=topic)
+                                       topic=topic, authid=authid)
     query_parameters.save()
     print "saved:" + str(query_parameters)
 
@@ -104,7 +105,39 @@ def get_all_query_params():
              "twitter":query_parameter.twitter,
              "youtube": query_parameter.youtube,
              "category": query_parameter.category,
-             "topic": query_parameter.topic
+             "topic": query_parameter.topic,
+             "authid": query_parameter.authid
+             }
+        results.append(d)
+    return results
+
+
+@app.task
+def get_all_query_params_authid(authid):
+    from itdtool.models import QueryParameters
+
+    query_parameters_all_rev = QueryParameters.objects.filter(authid=authid)
+    # print query_parameters_all
+    query_parameters_all = list(reversed(query_parameters_all_rev))
+    results = []
+    print "saved:" + str(query_parameters_all)
+
+    for query_parameter in query_parameters_all:
+        print("retrieve all query_parameter " + str(query_parameter))
+        d = {"id": query_parameter.id,
+            "description": query_parameter.description,
+             "keywords": query_parameter.keywords,
+             "location": query_parameter.location,
+             "start_date": query_parameter.start_date,
+             "end_date": query_parameter.end_date,
+             "inference": query_parameter.inference,
+             "questions": query_parameter.questions,
+             "google": query_parameter.google,
+             "twitter":query_parameter.twitter,
+             "youtube": query_parameter.youtube,
+             "category": query_parameter.category,
+             "topic": query_parameter.topic,
+             "authid": query_parameter.authid
              }
         results.append(d)
     return results

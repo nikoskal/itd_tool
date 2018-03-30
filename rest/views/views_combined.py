@@ -148,6 +148,7 @@ def discover(request, queryid, format=None):
         end_date = query_param['end_date']
         questions = query_param['questions']
         inference = query_param['inference']
+        authid = query_param['authid']
         # sentiment = query_param['sentiment']
 
 
@@ -306,12 +307,14 @@ def discover(request, queryid, format=None):
         # with open(filename, 'w') as outfile:
         #     json.dump(results, outfile)
 
-        username = 'nikosk'
-        # print "json results:"
+
+
         json_results = json.dumps(results)
         # print json_results
         # print "saving to history"
-        add_history.delay(queryid, keyword, description, username, json_results, start_date, end_date)
+
+        # authid is stored as username
+        add_history.delay(queryid, keyword, description, authid, json_results, start_date, end_date)
         # print "saved"
 
         # print json_results

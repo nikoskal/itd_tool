@@ -91,6 +91,31 @@ def add_history(query_id, keyword, query_desc, user_name, results, start_date, e
 
 
 @app.task
+def get_all_history_authid(authid):
+
+    history_all = HistoryModel.objects.filter(user_name=authid)
+    reverse_ordered = list(reversed(history_all))
+    results = []
+
+    for history in reverse_ordered:
+        print("retrieve all history: " + str(history))
+        one_result = {
+            "id": history.id,
+            "query_desc": history.query_desc,
+            "query_id": history.query_id,
+            "user_name": history.user_name,
+            "execution_date": history.execution_date,
+            # "results": history.results,
+            "keyword": history.keyword,
+            "start_date": history.start_date,
+            "end_date": history.end_date
+        }
+        results.append(one_result)
+
+    return results
+
+
+@app.task
 def get_all_history():
 
     history_all = HistoryModel.objects.all()
@@ -105,7 +130,7 @@ def get_all_history():
             "query_id": history.query_id,
             "user_name": history.user_name,
             "execution_date": history.execution_date,
-            "results": history.results,
+            # "results": history.results,
             "keyword": history.keyword,
             "start_date": history.start_date,
             "end_date": history.end_date

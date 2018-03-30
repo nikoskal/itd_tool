@@ -6,11 +6,35 @@ from itdtool import account_repo
 import pandas as pd
 from validate_ip import valid_ip
 from validate_user import valid_user
-from itdtool.tasks.history_task import get_all_history, get_history_item, delete_history, export_history_item
+from itdtool.tasks.history_task import get_all_history, get_history_item, delete_history, export_history_item, get_all_history_authid
 import json
 import xlsxwriter
 import time
 
+
+
+
+
+
+@api_view(['GET'])
+# @authentication_classes((TokenAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
+def history_authid(request, authid, format=None):
+    """
+    Retrieve all history by authid
+
+    """
+    ip_address = request.META['REMOTE_ADDR']
+    if valid_ip(ip_address) is False:
+        return Response("Not authorised client IP", status=status.HTTP_401_UNAUTHORIZED)
+
+    if request.method == 'GET':
+        # print "retrieve histroy"
+        hist_asynch = get_all_history_authid.delay(authid)
+        hist_list = hist_asynch.get()
+        # print("in1")
+        # print "retrieve hist_list " + str(hist_list)
+        return Response(hist_list, status=status.HTTP_200_OK)
 
 
 

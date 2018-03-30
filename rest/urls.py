@@ -12,6 +12,7 @@ urlpatterns = [
     #################################################
 
     # history
+    url(r'^history_authid/(?P<authid>[a-zA-Z0-9_%]+)/$', views_history.history_authid),
     url(r'^history/$', views_history.history),
     url(r'^history/(?P<history_id>[0-9_]+)/$', views_history.history_id),
     url(r'^history_export/(?P<history_id>[0-9_]+)/$', views_history.history_export_id),
@@ -47,6 +48,9 @@ urlpatterns = [
     # url(r'^gtrends-tests/$', views_gtrends.test),
 
     # query params
+    url(r'^query_parameters_authid/(?P<authid>[a-zA-Z0-9_%]+)/$', views_queryparams.query_params_mgmt_authid),
+    url(r'^query_parameters_authid/(?P<authid>[a-zA-Z0-9_%]+)/id/(?P<id>[0-9]+)$', views_queryparams.query_params_mgmt_authid_id),
+
     url(r'^query-parameters/$', views_queryparams.query_params_mgmt),
     url(r'^query-parameters/(?P<id>[0-9]+)/$', views_queryparams.query_params_mgmt_id),
 

@@ -33,6 +33,7 @@ class QueryParameters(models.Model):
     date_param_added = models.DateTimeField(auto_now=True)
     category = models.IntegerField()
     topic = models.TextField()
+    authid = models.CharField(max_length=30)
 
     def __str__(self):
         output = self.description + " " + self.keywords
