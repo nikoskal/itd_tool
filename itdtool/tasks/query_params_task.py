@@ -69,7 +69,7 @@ def add_query_params(description, keywords, location, start_date, end_date, infe
     # end_date = models.DateTimeField()  # ending time period to search
     # inference = models.BooleanField()
     # questions = models.BooleanField()
-    print "saved category:" + str(category)
+
     query_parameters = QueryParameters(description=description, keywords=keywords, location=location,
                                        start_date=start_date, end_date=end_date, inference=inference,
                                        questions=questions,twitter=twitter, google=google,youtube=youtube,

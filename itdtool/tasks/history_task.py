@@ -180,7 +180,7 @@ def export_history_item(id):
     ws_time_interest = workbook.add_worksheet('time_interest')
     ws_volume = workbook.add_worksheet('volume')
     ws_region = workbook.add_worksheet('region')
-    ws_autocomplete = workbook.add_worksheet('autocomplete')
+    ws_autocomplete = workbook.add_worksheet('questions')
     ws_twitter_gender = workbook.add_worksheet('twitter_gender')
     ws_twitter_sentiment = workbook.add_worksheet('twitter_sentiment')
     ws_popular_tweets = workbook.add_worksheet('popular_tweets')

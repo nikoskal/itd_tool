@@ -14,8 +14,8 @@ import json
 import pprint
 import requests
 from xml.etree import ElementTree
-# from itdtool.requests import TrendReq
-from pytrends.request import TrendReq
+from itdtool.pytrends.request import TrendReq
+# from pytrends.request import TrendReq
 
 
 @app.task

@@ -92,13 +92,13 @@ def query_params_mgmt(request, format=None):
         youtube = request.data['youtube']
         authid = request.data['authid']
 
-        print category
-        print topic
-        print keywords
-        print authid
+        print "start_date:" + str(start_date)
+        print "end_date:" + str(end_date)
+        print "start_date[]:" + str(start_date[:-14])
+        print "end_date[]:" + str(end_date[:-14])
 
-        new_params = add_query_params(description, keywords, location, start_date,
-                                      end_date, inference, questions, twitter, google,youtube,
+        new_params = add_query_params(description, keywords, location, start_date[:-14],
+                                      end_date[:-14], inference, questions, twitter, google,youtube,
                                       category, topic, authid)
         print 'new_params:'+ str(new_params)
 
